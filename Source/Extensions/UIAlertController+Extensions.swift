@@ -1,6 +1,6 @@
 //
 //  UIAlertController+Extensions.swift
-//  Swift Toolbox
+//  UIKit Toolbox
 //
 //  Created by Stevo on 3/20/20.
 //  Copyright © 2020 Stevo Brock. All rights reserved.
