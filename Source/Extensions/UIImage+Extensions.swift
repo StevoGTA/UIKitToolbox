@@ -1,8 +1,9 @@
 //
 //  UIImage+Extensions.swift
-//  Virtual Sheet Music
+//  UIKit Toolbox
 //
 //  Created by Stevo on 4/9/20.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
 import UIKit

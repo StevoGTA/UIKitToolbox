@@ -1,6 +1,10 @@
-//----------------------------------------------------------------------------------------------------------------------
-//	UKTOpenGLES30View.mm			©2020 Stevo Brock		All rights reserved.
-//----------------------------------------------------------------------------------------------------------------------
+//
+//  UKTOpenGLES30View.mm
+//  UIKit Toolbox
+//
+//  Created by Stevo on 4/1/20.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
+//
 
 #import "UKTOpenGLView.h"
 
