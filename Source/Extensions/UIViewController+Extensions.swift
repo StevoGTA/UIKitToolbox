@@ -42,10 +42,11 @@ extension UIViewController {
 	func presentAnimated(_ viewController :UIViewController) { present(viewController, animated: true) }
 
 	//------------------------------------------------------------------------------------------------------------------
-	func embed(_ viewController :UIViewController) {
+	func embed(_ viewController :UIViewController, in view :UIView? = nil) {
 		// Add child
-		self.addChild(viewController)
-		self.view.addSubview(viewController.view)
+		viewController.view.frame = (view ?? self.view).bounds
+		addChild(viewController)
+		(view ?? self.view).addSubview(viewController.view)
 		viewController.didMove(toParent: self)
 	}
 
