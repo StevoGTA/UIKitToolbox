@@ -42,6 +42,23 @@ extension UIViewController {
 	func presentAnimated(_ viewController :UIViewController) { present(viewController, animated: true) }
 
 	//------------------------------------------------------------------------------------------------------------------
+	func embed(_ viewController :UIViewController, in view :UIView? = nil) {
+		// Add child
+		viewController.view.frame = (view ?? self.view).bounds
+		addChild(viewController)
+		(view ?? self.view).addSubview(viewController.view)
+		viewController.didMove(toParent: self)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func unembed(_ viewController :UIViewController) {
+		// Remove
+		viewController.willMove(toParent: nil)
+		viewController.view.removeFromSuperview()
+		viewController.removeFromParent()
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	func presentAlert(title :String? = nil, message :String, actionButtonTitle :String = "OK",
 			actionProc :@escaping () -> Void = {}) {
 		// Present alert
