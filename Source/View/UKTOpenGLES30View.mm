@@ -124,7 +124,7 @@ static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
 
 	[self removePeriodic];
 
-	DisposeOf(self.gpuInternal);
+	Delete(self.gpuInternal);
 }
 
 // MARK: NSResponder methods
