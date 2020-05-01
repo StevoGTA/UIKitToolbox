@@ -206,7 +206,7 @@ static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
 							(COpenGLGPUReleaseContextProc) sReleaseContextProc, (__bridge void*) self));
 
 	SOpenGLESGPUSetupInfo	openGLESGPUSetupInfo(scale, (__bridge void*) eaglLayer);
-	self.gpuInternal->setup(S2DSize32(self.bounds.size.width * scale, self.bounds.size.height * scale),
+	self.gpuInternal->setup(S2DSizeF32(self.bounds.size.width * scale, self.bounds.size.height * scale),
 			&openGLESGPUSetupInfo);
 
 	// Check for errors
