@@ -1,9 +1,9 @@
 //
 //  UKTRemoteImageImageView.swift
-//  Media Player - Apple
+//  UIKit Toolbox
 //
 //  Created by Stevo on 4/20/20.
-//  Copyright © 2020 Sunset Magicwerks, LLC. All rights reserved.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
 import UIKit
@@ -14,11 +14,11 @@ class UKTRemoteImageImageView : UIImageView {
 
 	// MARK: Properties
 	private	var	t :Any?
-	private	var	remoteImageRetriever :RemoteImageRetriever!
+	private	var	remoteImageRetriever :UKTRemoteImageRetriever!
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func setup(with t :Any, remoteImageRetriever :RemoteImageRetriever) {
+	func setup(with t :Any, remoteImageRetriever :UKTRemoteImageRetriever) {
 		// Cleanup if necessary
 		cleanup()
 

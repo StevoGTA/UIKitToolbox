@@ -1,16 +1,16 @@
 //
-//  RemoteImageRetriever.swift
-//  Media Player - Apple
+//  UKTRemoteImageRetriever.swift
+//  UIKit Toolbox
 //
 //  Created by Stevo on 4/20/20.
-//  Copyright © 2020 Sunset Magicwerks, LLC. All rights reserved.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
 import UIKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: RemoteImageRetriever
-protocol RemoteImageRetriever {
+// MARK: UKTRemoteImageRetriever
+protocol UKTRemoteImageRetriever {
 
 	// MARK: Instance methods
 	func queryRemoteImage(for item :Any, completionProc :@escaping (_ image :UIImage) -> Void)
