@@ -42,6 +42,9 @@ extension UIViewController {
 	func presentAnimated(_ viewController :UIViewController) { present(viewController, animated: true) }
 
 	//------------------------------------------------------------------------------------------------------------------
+	func dismissAnimated() { dismiss(animated: true) }
+
+	//------------------------------------------------------------------------------------------------------------------
 	func embed(_ viewController :UIViewController, in view :UIView? = nil) {
 		// Add child
 		viewController.view.frame = (view ?? self.view).bounds
@@ -169,6 +172,16 @@ extension UIViewController {
 			presentAnimated(viewController)
 		}
 	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func infoForButton(with selector :Selector, forControlEvent controlEvent :UIControl.Event) ->
+			(button :UIButton, target :AnyHashable)? {
+		// Return button
+		self.view.infoForButton(with: selector, forControlEvent: controlEvent)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func instancesDeep<T>() -> [T] { self.view.instancesDeep() }
 
 	// MARK: Internal methods
 	//------------------------------------------------------------------------------------------------------------------

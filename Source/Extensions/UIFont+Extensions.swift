@@ -1,9 +1,9 @@
 //
 //  UIFont+Extensions.swift
-//  Media Player - Apple
+//  UIKit Toolbox
 //
 //  Created by Stevo on 4/21/20.
-//  Copyright © 2020 Sunset Magicwerks, LLC. All rights reserved.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
 import UIKit
