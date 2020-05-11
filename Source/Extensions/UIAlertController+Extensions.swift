@@ -14,7 +14,7 @@ extension UIAlertController {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	convenience init(title :String, message :String, preferredStyle :UIAlertController.Style = .alert,
+	convenience init(title :String? = nil, message :String? = nil, preferredStyle :UIAlertController.Style = .alert,
 			actionButtonTitle :String, actionProc :@escaping () -> Void = {}) {
 		// Do super
 		self.init(title: title, message: message, preferredStyle: preferredStyle)
@@ -24,7 +24,7 @@ extension UIAlertController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	convenience init(title :String, message :String, preferredStyle :UIAlertController.Style = .alert,
+	convenience init(title :String? = nil, message :String? = nil, preferredStyle :UIAlertController.Style = .alert,
 			actionButtonTitle :String, cancelButtonTitle :String, actionProc :@escaping () -> Void,
 			cancelProc :@escaping () -> Void = {}) {
 		// Do super
