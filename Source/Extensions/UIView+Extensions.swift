@@ -14,6 +14,9 @@ extension UIView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
+	func removeAllSubviews() { self.subviews.forEach() { $0.removeFromSuperview() } }
+
+	//------------------------------------------------------------------------------------------------------------------
 	func infoForButton(with selector :Selector, forControlEvent controlEvent :UIControl.Event) ->
 			(button :UIButton, target :AnyHashable)? {
 		// Iterate all subviews
