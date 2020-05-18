@@ -131,7 +131,7 @@ extension UIViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func present(_ alertController :UIAlertController, from view :UIView? = nil) {
+	func present(_ alertController :UIAlertController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
 		// Check preferred style
 		if (alertController.preferredStyle == .actionSheet) && (UIDevice.current.userInterfaceIdiom == .pad) &&
 				(view != nil) {
@@ -139,6 +139,9 @@ extension UIViewController {
 			alertController.modalPresentationStyle = .popover
 			alertController.popoverPresentationController?.sourceView = view
 			alertController.popoverPresentationController?.sourceRect = view!.bounds
+		} else {
+			// Add cancel
+			alertController.addAction(UIAlertAction(title: cancelTitle, style: .cancel))
 		}
 
 		// Present
@@ -148,7 +151,18 @@ extension UIViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func present(_ viewController :UIViewController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
 		// Check preferred style
-		if view != nil {
+		if UIDevice.current.userInterfaceIdiom == .phone {
+			// Embed in navigation controller
+			let	navigationController = UINavigationController(rootViewController: viewController)
+
+			// Add close bar button item
+			viewController.navigationItem.rightBarButtonItem =
+					UIBarButtonItem(title: "Close", style: .plain, target: self,
+							action: #selector(uiViewControllerExtensionsDismiss))
+
+			// Present
+			presentAnimated(navigationController)
+		} else if view != nil {
 			// Present as popover from view
 			viewController.modalPresentationStyle = .popover
 			viewController.popoverPresentationController?.sourceView = view
@@ -156,17 +170,6 @@ extension UIViewController {
 
 			// Present
 			presentAnimated(viewController)
-		} else if self.traitCollection.horizontalSizeClass == .compact {
-			// Embed in navigation controller
-			let	navigationController = UINavigationController(rootViewController: viewController)
-
-			// Add close bar button item
-			viewController.navigationItem.leftBarButtonItem =
-					UIBarButtonItem(title: cancelTitle, style: .plain, target: self,
-							action: #selector(uiViewControllerExtensionsCancel(_:)))
-
-			// Present
-			presentAnimated(navigationController)
 		} else {
 			// Present
 			presentAnimated(viewController)
@@ -185,7 +188,7 @@ extension UIViewController {
 
 	// MARK: Internal methods
 	//------------------------------------------------------------------------------------------------------------------
-	@objc func uiViewControllerExtensionsCancel(_ :UIButton) {
+	@objc func uiViewControllerExtensionsDismiss(_ :UIButton) {
 		// End editing
 		self.view.endEditing(true)
 
