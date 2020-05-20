@@ -97,7 +97,7 @@ extension UIViewController {
 		}
 
 		// Present
-		present(alertController, animated: true)
+		presentAnimated(alertController)
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -131,6 +131,52 @@ extension UIViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
+	func present(_ alertController :UIAlertController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
+		// Check preferred style
+		if (alertController.preferredStyle == .actionSheet) && (UIDevice.current.userInterfaceIdiom == .pad) &&
+				(view != nil) {
+			// Present as popover from view
+			alertController.modalPresentationStyle = .popover
+			alertController.popoverPresentationController?.sourceView = view
+			alertController.popoverPresentationController?.sourceRect = view!.bounds
+		} else {
+			// Add cancel
+			alertController.addAction(UIAlertAction(title: cancelTitle, style: .cancel))
+		}
+
+		// Present
+		presentAnimated(alertController)
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func present(_ viewController :UIViewController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
+		// Check preferred style
+		if UIDevice.current.userInterfaceIdiom == .phone {
+			// Embed in navigation controller
+			let	navigationController = UINavigationController(rootViewController: viewController)
+
+			// Add close bar button item
+			viewController.navigationItem.rightBarButtonItem =
+					UIBarButtonItem(title: "Close", style: .plain, target: self,
+							action: #selector(uiViewControllerExtensionsDismiss))
+
+			// Present
+			presentAnimated(navigationController)
+		} else if view != nil {
+			// Present as popover from view
+			viewController.modalPresentationStyle = .popover
+			viewController.popoverPresentationController?.sourceView = view
+			viewController.popoverPresentationController?.sourceRect = view!.bounds
+
+			// Present
+			presentAnimated(viewController)
+		} else {
+			// Present
+			presentAnimated(viewController)
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
 	func infoForButton(with selector :Selector, forControlEvent controlEvent :UIControl.Event) ->
 			(button :UIButton, target :AnyHashable)? {
 		// Return button
@@ -139,4 +185,14 @@ extension UIViewController {
 
 	//------------------------------------------------------------------------------------------------------------------
 	func instancesDeep<T>() -> [T] { self.view.instancesDeep() }
+
+	// MARK: Internal methods
+	//------------------------------------------------------------------------------------------------------------------
+	@objc func uiViewControllerExtensionsDismiss(_ :UIButton) {
+		// End editing
+		self.view.endEditing(true)
+
+		// Close
+		self.dismiss(animated: true)
+	}
 }

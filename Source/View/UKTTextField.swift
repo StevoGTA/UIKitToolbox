@@ -17,7 +17,7 @@ class UKTTextField : UITextField {
 	private	var	notificationObservers = [NSObjectProtocol]()
 
 	// MARK: Lifecycle methods
-	//----------------------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------------------------------
 	override init(frame :CGRect) {
 		// Do super
 		super.init(frame: frame)
@@ -27,7 +27,7 @@ class UKTTextField : UITextField {
 				{ [unowned self] _ in self.textDidChangeProc() }
 	}
 
-	//----------------------------------------------------------------------------------------------------------------------
+	//------------------------------------------------------------------------------------------------------------------
 	required init?(coder :NSCoder) {
 		// Do super
 		super.init(coder: coder)

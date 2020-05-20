@@ -1,0 +1,50 @@
+//
+//  CGPDFDocument+Extensions.swift
+//  UIKit Toolbox
+//
+//  Created by Stevo on 5/7/20.
+//  Copyright © 2020 Stevo Brock. All rights reserved.
+//
+
+import UIKit
+
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: CGPDFDocument extension
+extension CGPDFDocument {
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	func data(forPages indexSet :IndexSet) -> Data {
+		// Setup
+		let	data = NSMutableData()
+
+		// Run lean
+		autoreleasepool() {
+			// Setup
+			UIGraphicsBeginPDFContextToData(data, .zero, nil)
+
+			// Iterate page indexes
+			indexSet.forEach() {
+				// setup
+				guard let page = self.page(at: $0 + 1) else { return }
+				let	boxRect = page.getBoxRect(.mediaBox)
+
+				// Add page
+				UIGraphicsBeginPDFPageWithInfo(boxRect, nil)
+
+				let	context = UIGraphicsGetCurrentContext()!
+				context.interpolationQuality = .high
+				context.saveGState()
+				context.scaleBy(x: 1.0, y: -1.0)
+				context.translateBy(x: 0.0, y: -boxRect.height)
+				context.drawPDFPage(page)
+				context.restoreGState()
+			}
+
+			// Cleanup
+			UIGraphicsEndPDFContext()
+		}
+
+		return data as Data
+	}
+}

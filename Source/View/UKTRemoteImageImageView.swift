@@ -18,13 +18,16 @@ class UKTRemoteImageImageView : UIImageView {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func setup(with t :Any, remoteImageRetriever :UKTRemoteImageRetriever) {
+	func setup(with t :Any, remoteImageRetriever :UKTRemoteImageRetriever, defaultImage :UIImage? = nil) {
 		// Cleanup if necessary
 		cleanup()
 
 		// Store
 		self.t = t
 		self.remoteImageRetriever = remoteImageRetriever
+
+		// Setup UI
+		self.image = defaultImage
 
 		// Query image
 		self.remoteImageRetriever.queryRemoteImage(for: self.t!) { [weak self] image in
@@ -37,7 +40,7 @@ class UKTRemoteImageImageView : UIImageView {
 	func cleanup() {
 		// Check if we have a thing
 		if self.t != nil {
-			// Cancel any remote image query in flight
+			// Cancel any remote image query that is in-flight
 			self.remoteImageRetriever.cancelQueryRemoteImage(for: self.t!)
 			self.t = nil
 		}
