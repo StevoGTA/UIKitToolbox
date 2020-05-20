@@ -17,9 +17,12 @@
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local procs declaration
 
-static	void	sAcquireContextProc(UKTOpenGLView* openGLView);
-static	bool	sTryAcquireContextProc(UKTOpenGLView* openGLView);
-static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
+static	void		sAcquireContextProc(UKTOpenGLView* openGLView);
+static	bool		sTryAcquireContextProc(UKTOpenGLView* openGLView);
+static	void		sReleaseContextProc(UKTOpenGLView* openGLView);
+static	S2DSizeU16	sGetSizeProc(UKTOpenGLView* openGLView);
+static	Float32		sGetScaleProc(UKTOpenGLView* openGLView);
+static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -47,36 +50,6 @@ static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
 @synthesize motionEndedProc;
 
 @synthesize periodicProc;
-
-// MARK: UKTGPUView methods
-
-//----------------------------------------------------------------------------------------------------------------------
-- (CGPU&) gpu
-{
-	return *self.gpuInternal;
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) installPeriodic
-{
-	// Setup
-	self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkProc:)];
-
-	// Install
-	[self.displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
-}
-
-//----------------------------------------------------------------------------------------------------------------------
-- (void) removePeriodic
-{
-	// Lock to make sure we are not removing while in output callback
-	[self.displayLinkLock lock];
-	[self.displayLink invalidate];
-	[self.displayLinkLock unlock];
-
-	// Clear
-	self.displayLink = nil;
-}
 
 // MARK: Class methods
 
@@ -171,6 +144,36 @@ static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
 	self.motionEndedProc(eventSubtype, event);
 }
 
+// MARK: UKTGPUView methods
+
+//----------------------------------------------------------------------------------------------------------------------
+- (CGPU&) gpu
+{
+	return *self.gpuInternal;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) installPeriodic
+{
+	// Setup
+	self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkProc:)];
+
+	// Install
+	[self.displayLink addToRunLoop:NSRunLoop.currentRunLoop forMode:NSDefaultRunLoopMode];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+- (void) removePeriodic
+{
+	// Lock to make sure we are not removing while in output callback
+	[self.displayLinkLock lock];
+	[self.displayLink invalidate];
+	[self.displayLinkLock unlock];
+
+	// Clear
+	self.displayLink = nil;
+}
+
 // MARK: Internal methods
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -203,11 +206,10 @@ static	void	sReleaseContextProc(UKTOpenGLView* openGLView);
 			new CGPU(
 					CGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
 							(COpenGLGPUTryAcquireContextProc) sTryAcquireContextProc,
-							(COpenGLGPUReleaseContextProc) sReleaseContextProc, (__bridge void*) self));
-
-	SOpenGLESGPUSetupInfo	openGLESGPUSetupInfo(scale, (__bridge void*) eaglLayer);
-	self.gpuInternal->setup(S2DSizeF32(self.bounds.size.width * scale, self.bounds.size.height * scale),
-			&openGLESGPUSetupInfo);
+							(COpenGLGPUReleaseContextProc) sReleaseContextProc,
+							(COpenGLGPUGetSizeProc) sGetSizeProc, (COpenGLGPUGetScaleProc) sGetScaleProc,
+							(COpenGLGPUGetRenderBufferStorageContextProc) sGetRenderBufferStorageContextProc,
+							(__bridge void*) self));
 
 	// Check for errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -288,4 +290,22 @@ bool sTryAcquireContextProc(UKTOpenGLView* openGLView)
 void sReleaseContextProc(UKTOpenGLView* openGLView)
 {
 	[openGLView releaseContext];
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+S2DSizeU16 sGetSizeProc(UKTOpenGLView* openGLView)
+{
+	return S2DSizeU16(openGLView.bounds.size.width, openGLView.bounds.size.height);
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+Float32 sGetScaleProc(UKTOpenGLView* openGLView)
+{
+	return openGLView.contentScaleFactor;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+void* sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView)
+{
+	return (__bridge void*) openGLView.layer;
 }
