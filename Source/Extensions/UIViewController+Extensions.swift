@@ -133,6 +133,7 @@ extension UIViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func present(_ alertController :UIAlertController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
 		// Check preferred style
+#if TARGET_OS_IOS || TARGET_OS_SIMULATOR
 		if (alertController.preferredStyle == .actionSheet) && (UIDevice.current.userInterfaceIdiom == .pad) &&
 				(view != nil) {
 			// Present as popover from view
@@ -143,9 +144,15 @@ extension UIViewController {
 			// Add cancel
 			alertController.addAction(UIAlertAction(title: cancelTitle, style: .cancel))
 		}
+		// Present
+		presentAnimated(alertController)
+#else
+		// Add cancel
+		alertController.addAction(UIAlertAction(title: cancelTitle, style: .cancel))
 
 		// Present
 		presentAnimated(alertController)
+#endif
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -163,10 +170,12 @@ extension UIViewController {
 			// Present
 			presentAnimated(navigationController)
 		} else if view != nil {
+#if TARGET_OS_IOS || TARGET_OS_SIMULATOR
 			// Present as popover from view
 			viewController.modalPresentationStyle = .popover
 			viewController.popoverPresentationController?.sourceView = view
 			viewController.popoverPresentationController?.sourceRect = view!.bounds
+#endif
 
 			// Present
 			presentAnimated(viewController)
