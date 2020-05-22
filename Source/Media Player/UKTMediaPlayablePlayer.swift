@@ -31,4 +31,6 @@ protocol UKTMediaPlayablePlayer {
 	func rewind(timeInterval :TimeInterval)
 	func forward(timeInterval :TimeInterval)
 	func seek(timeInterval :TimeInterval)
+
+	func setAudio(muted :Bool)
 }

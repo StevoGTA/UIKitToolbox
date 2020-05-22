@@ -63,6 +63,12 @@
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{INFO}" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wzb-6G-dDm">
+                                        <rect key="frame" x="28" y="117.66666666666666" width="319" height="20.333333333333343"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="{CASTING MESSAGE}" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WlI-Mp-KN6">
                                         <rect key="frame" x="28" y="560" width="319" height="20.333333333333371"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
@@ -209,12 +215,15 @@
                                     <constraint firstItem="FS3-z1-92q" firstAttribute="top" secondItem="iiq-ta-6Mb" secondAttribute="bottom" constant="8" id="1aB-lw-KsQ"/>
                                     <constraint firstItem="iiq-ta-6Mb" firstAttribute="leading" secondItem="IDl-hj-cRB" secondAttribute="leadingMargin" constant="20" id="1db-cu-q1Q"/>
                                     <constraint firstItem="t4v-Q9-CfK" firstAttribute="top" secondItem="X5s-Q7-5qF" secondAttribute="bottom" constant="4" id="1kn-dk-8IF"/>
+                                    <constraint firstItem="Wzb-6G-dDm" firstAttribute="leading" secondItem="FS3-z1-92q" secondAttribute="leading" id="2rT-CX-fGo"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="ZTe-1g-xhJ" secondAttribute="trailing" constant="20" id="5wK-Y8-0Ee"/>
                                     <constraint firstItem="h5P-rE-ldq" firstAttribute="trailing" secondItem="X5s-Q7-5qF" secondAttribute="trailing" id="7Yx-Iy-YXC"/>
                                     <constraint firstItem="X5s-Q7-5qF" firstAttribute="leading" secondItem="IDl-hj-cRB" secondAttribute="leadingMargin" constant="20" id="CaM-57-YXD"/>
                                     <constraint firstItem="WlI-Mp-KN6" firstAttribute="leading" secondItem="IDl-hj-cRB" secondAttribute="leadingMargin" constant="20" id="HmL-Pv-9iC"/>
                                     <constraint firstItem="t4v-Q9-CfK" firstAttribute="leading" secondItem="X5s-Q7-5qF" secondAttribute="leading" id="IO7-yE-svg"/>
+                                    <constraint firstItem="Wzb-6G-dDm" firstAttribute="trailing" secondItem="FS3-z1-92q" secondAttribute="trailing" id="JyU-KY-2TW"/>
                                     <constraint firstAttribute="trailingMargin" secondItem="X5s-Q7-5qF" secondAttribute="trailing" constant="20" id="LAJ-vC-W9N"/>
+                                    <constraint firstItem="Wzb-6G-dDm" firstAttribute="top" secondItem="FS3-z1-92q" secondAttribute="bottom" constant="8" id="PIh-oe-BrX"/>
                                     <constraint firstItem="FS3-z1-92q" firstAttribute="leading" secondItem="IDl-hj-cRB" secondAttribute="leadingMargin" constant="20" id="V3L-Ny-uej"/>
                                     <constraint firstAttribute="bottomMargin" secondItem="ZTe-1g-xhJ" secondAttribute="bottom" constant="20" id="Vb5-De-Ahd"/>
                                     <constraint firstItem="LfZ-SI-VPc" firstAttribute="width" secondItem="iiq-ta-6Mb" secondAttribute="width" id="WPV-xh-o7o"/>
@@ -267,6 +276,7 @@
                         <outlet property="castingMessageLabel" destination="WlI-Mp-KN6" id="DXQ-JB-s30"/>
                         <outlet property="controlsView" destination="IDl-hj-cRB" id="Jfv-Nh-iCT"/>
                         <outlet property="googleCastButton" destination="LfZ-SI-VPc" id="fKq-Lw-kda"/>
+                        <outlet property="infoLabel" destination="Wzb-6G-dDm" id="XFM-di-QIh"/>
                         <outlet property="leadingTimeLabel" destination="t4v-Q9-CfK" id="l6Y-8N-NgJ"/>
                         <outlet property="positionSlider" destination="X5s-Q7-5qF" id="y42-Cj-bLi"/>
                         <outlet property="posterImageOverlayView" destination="qG2-83-E1b" id="Qb2-T7-qrt"/>
@@ -292,6 +302,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="xmark.circle" catalog="system" width="128" height="121"/>
+        <image name="xmark.circle" catalog="system" width="32" height="32"/>
     </resources>
 </document>

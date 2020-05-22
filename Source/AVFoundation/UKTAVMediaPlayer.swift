@@ -103,6 +103,9 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 	//------------------------------------------------------------------------------------------------------------------
 	func seek(timeInterval :TimeInterval) { seek(to: CMTime(seconds: timeInterval, preferredTimescale: 600)) }
 
+	//------------------------------------------------------------------------------------------------------------------
+	func setAudio(muted :Bool) { self.avPlayer.isMuted = muted }
+
 	// MARK: Key/Value Observering methods
 	//------------------------------------------------------------------------------------------------------------------
 	override func observeValue(forKeyPath keyPath :String?, of object :Any?, change :[NSKeyValueChangeKey : Any]?,

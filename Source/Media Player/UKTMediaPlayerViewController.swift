@@ -86,6 +86,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 				var	posterImageInfoProc
 							:(_ queueItem :QueueItem) ->
 									(t :Any, remoteImageRetriever :UKTRemoteImageRetriever)? = { _ in return nil }
+				var	infoProc :(_ queueItem :QueueItem) -> String? = { _ in return nil }
 				var	closeProc :() -> Void = {}
 
 	@IBOutlet	var	posterImageView :UKTRemoteImageImageView!
@@ -98,6 +99,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 	@IBOutlet	var	controlsView :UIView!
 	@IBOutlet	var	googleCastButton :GCKUICastButton!
 	@IBOutlet	var	titleLabel :UILabel!
+	@IBOutlet	var	infoLabel :UILabel!
 	@IBOutlet	var	castingMessageLabel :UILabel!
 	@IBOutlet	var	positionSlider :UISlider!
 	@IBOutlet	var	leadingTimeLabel :UILabel!
@@ -273,6 +275,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 
 		// Update UI
 		self.titleLabel.text = self.currentQueueItem!.mediaPlayable.title
+		self.infoLabel.text = self.infoProc(self.currentQueueItem!)
 
 		if let info = self.posterImageInfoProc(self.currentQueueItem!) {
 			// Setup Poster Image View
@@ -309,7 +312,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition)
 
 			self.mediaPlayablePlayerLayer = (self.mediaPlayablePlayer as! UKTAVMediaPlayer).layer
-			self.mediaPlayablePlayerLayer!.frame = self.view.bounds
+			self.mediaPlayablePlayerLayer!.frame = self.videoView.bounds
 			self.videoView.layer.addSublayer(self.mediaPlayablePlayerLayer!)
 
 			self.castingMessageLabel.text = ""
