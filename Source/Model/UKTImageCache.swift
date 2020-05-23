@@ -9,10 +9,10 @@
 import UIKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: ImageCache
-protocol ImageCache : DataCache {}
+// MARK: UKTImageCache
+protocol UKTImageCache : DataCache {}
 
-extension ImageCache {
+extension UKTImageCache {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
@@ -20,9 +20,9 @@ extension ImageCache {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK - MemoryImageCache
-class MemoryImageCache : MemoryDataCache, ImageCache {}
+// MARK - UKTMemoryImageCache
+class UKTMemoryImageCache : MemoryDataCache, UKTImageCache {}
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK - MemoryImageCache
-class FilesystemImageCache : FilesystemDataCache, ImageCache {}
+// MARK - UKTFilesystemImageCache
+class UKTFilesystemImageCache : FilesystemDataCache, UKTImageCache {}
