@@ -33,4 +33,5 @@ protocol UKTMediaPlayablePlayer {
 	func seek(timeInterval :TimeInterval)
 
 	func setAudio(muted :Bool)
+	func setAudio(volume :Float)
 }
