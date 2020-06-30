@@ -12,7 +12,7 @@ import UIKit
 class UKTTextField : UITextField {
 
 	// MARK: Properties
-			var	textDidChangeProc :() -> Void = {}
+			var	textDidChangeProc :(_ text :String) -> Void = { _ in }
 
 	private	var	notificationObservers = [NSObjectProtocol]()
 
@@ -24,7 +24,7 @@ class UKTTextField : UITextField {
 
 		// Setup notifications
 		NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self)
-				{ [unowned self] _ in self.textDidChangeProc() }
+				{ [unowned self] _ in self.textDidChangeProc(self.text!) }
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@ class UKTTextField : UITextField {
 
 		// Setup notifications
 		NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self)
-				{ [unowned self] _ in self.textDidChangeProc() }
+				{ [unowned self] _ in self.textDidChangeProc(self.text!) }
 	}
 
 	//------------------------------------------------------------------------------------------------------------------

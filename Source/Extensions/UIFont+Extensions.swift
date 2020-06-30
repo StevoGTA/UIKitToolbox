@@ -14,7 +14,7 @@ extension UIFont {
 
 	// MARK: Properties
 	var	weight :UIFont.Weight {
-				//
+				// Setup
 				guard let traits = self.fontDescriptor.object(forKey: .traits) as? [UIFontDescriptor.TraitKey : Any]
 						else { return .regular }
 				guard let weight = traits[.weight] as? NSNumber else { return .regular }
