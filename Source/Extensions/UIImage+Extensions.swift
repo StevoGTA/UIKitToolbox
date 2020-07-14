@@ -23,6 +23,6 @@ extension UIImage {
 		let	size = self.size;
 
 		// Draw
-		draw(at: point.offset(dx: -size.width * 0.5, dy: -size.height * 0.5))
+		draw(at: point.offsetBy(dx: -size.width * 0.5, dy: -size.height * 0.5))
 	}
 }
