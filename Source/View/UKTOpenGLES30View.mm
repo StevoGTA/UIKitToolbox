@@ -204,7 +204,7 @@ static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 
 	self.gpuInternal =
 			new CGPU(
-					CGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
+					SGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
 							(COpenGLGPUTryAcquireContextProc) sTryAcquireContextProc,
 							(COpenGLGPUReleaseContextProc) sReleaseContextProc,
 							(COpenGLGPUGetSizeProc) sGetSizeProc, (COpenGLGPUGetScaleProc) sGetScaleProc,
