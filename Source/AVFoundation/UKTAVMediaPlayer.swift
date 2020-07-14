@@ -106,6 +106,9 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 	//------------------------------------------------------------------------------------------------------------------
 	func setAudio(muted :Bool) { self.avPlayer.isMuted = muted }
 
+	//------------------------------------------------------------------------------------------------------------------
+	func setAudio(volume :Float) { self.avPlayer.volume = volume }
+
 	// MARK: Key/Value Observering methods
 	//------------------------------------------------------------------------------------------------------------------
 	override func observeValue(forKeyPath keyPath :String?, of object :Any?, change :[NSKeyValueChangeKey : Any]?,

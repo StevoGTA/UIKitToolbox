@@ -71,16 +71,19 @@ extension UIViewController {
 
 	//------------------------------------------------------------------------------------------------------------------
 	func presentAlert(title :String? = nil, message :String,
-			defaultActionButtonTitle :String = "OK", defaultActionProc :@escaping () -> Void = {},
+			defaultActionButtonTitle :String? = "OK", defaultActionProc :@escaping () -> Void = {},
 			cancelActionButtonTitle :String? = nil, cancelActionProc :@escaping () -> Void = {},
 			destructiveActionButtonTitle :String? = nil, destructiveActionProc :@escaping () -> Void = {}) {
 		// Compose alert controller
 		let	alertController =
 					UIAlertController(title: title, message: message, preferredStyle: .alert)
-		alertController.addAction(UIAlertAction(title: defaultActionButtonTitle, style: .default) { _ in
-			// Call proc
-			defaultActionProc()
-		})
+		if defaultActionButtonTitle != nil {
+			// Add default action
+			alertController.addAction(UIAlertAction(title: defaultActionButtonTitle, style: .default) { _ in
+				// Call proc
+				defaultActionProc()
+			})
+		}
 		if cancelActionButtonTitle != nil {
 			// Add cancel action
 			alertController.addAction(UIAlertAction(title: cancelActionButtonTitle!, style: .cancel) { _ in
@@ -133,7 +136,7 @@ extension UIViewController {
 	//------------------------------------------------------------------------------------------------------------------
 	func present(_ alertController :UIAlertController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
 		// Check preferred style
-#if TARGET_OS_IOS || TARGET_OS_SIMULATOR
+#if os(iOS)
 		if (alertController.preferredStyle == .actionSheet) && (UIDevice.current.userInterfaceIdiom == .pad) &&
 				(view != nil) {
 			// Present as popover from view
@@ -156,7 +159,8 @@ extension UIViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func present(_ viewController :UIViewController, from view :UIView? = nil, cancelTitle :String = "Cancel") {
+	func present(_ viewController :UIViewController, from view :UIView? = nil, closeTitle :String = "Close",
+			permittedArrowDirections :UIPopoverArrowDirection = .any) {
 		// Check preferred style
 		if UIDevice.current.userInterfaceIdiom == .phone {
 			// Embed in navigation controller
@@ -164,22 +168,52 @@ extension UIViewController {
 
 			// Add close bar button item
 			viewController.navigationItem.rightBarButtonItem =
-					UIBarButtonItem(title: "Close", style: .plain, target: self,
+					UIBarButtonItem(title: closeTitle, style: .plain, target: self,
 							action: #selector(uiViewControllerExtensionsDismiss))
 
 			// Present
 			presentAnimated(navigationController)
 		} else if view != nil {
-#if TARGET_OS_IOS || TARGET_OS_SIMULATOR
+#if os(iOS)
 			// Present as popover from view
 			viewController.modalPresentationStyle = .popover
 			viewController.popoverPresentationController?.sourceView = view
 			viewController.popoverPresentationController?.sourceRect = view!.bounds
+			viewController.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
 #endif
 
 			// Present
 			presentAnimated(viewController)
 		} else {
+			// Present
+			presentAnimated(viewController)
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func present(_ viewController :UIViewController, from :(sourceView :UIView, sourceRect :CGRect),
+			closeTitle :String = "Close", permittedArrowDirections :UIPopoverArrowDirection = .any) {
+		// Check preferred style
+		if UIDevice.current.userInterfaceIdiom == .phone {
+			// Embed in navigation controller
+			let	navigationController = UINavigationController(rootViewController: viewController)
+
+			// Add close bar button item
+			viewController.navigationItem.rightBarButtonItem =
+					UIBarButtonItem(title: closeTitle, style: .plain, target: self,
+							action: #selector(uiViewControllerExtensionsDismiss))
+
+			// Present
+			presentAnimated(navigationController)
+		} else {
+#if os(iOS)
+			// Present as popover from view
+			viewController.modalPresentationStyle = .popover
+			viewController.popoverPresentationController?.sourceView = from.sourceView
+			viewController.popoverPresentationController?.sourceRect = from.sourceRect
+			viewController.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
+#endif
+
 			// Present
 			presentAnimated(viewController)
 		}

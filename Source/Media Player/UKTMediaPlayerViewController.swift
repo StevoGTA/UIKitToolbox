@@ -87,6 +87,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 							:(_ queueItem :QueueItem) ->
 									(t :Any, remoteImageRetriever :UKTRemoteImageRetriever)? = { _ in return nil }
 				var	infoProc :(_ queueItem :QueueItem) -> String? = { _ in return nil }
+				var	mediaPlayablePlayerCurrentPositionUpdatedProc :(_ currentPosition :TimeInterval) -> Void = { _ in }
 				var	closeProc :() -> Void = {}
 
 	@IBOutlet	var	posterImageView :UKTRemoteImageImageView!
@@ -172,17 +173,26 @@ class UKTMediaPlayerViewController : UKTViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	override func viewWillTransition(to size :CGSize, with coordinator :UIViewControllerTransitionCoordinator) {
+	override func viewDidLayoutSubviews() {
 		// Do super
-		super.viewWillTransition(to: size, with: coordinator)
+		super.viewDidLayoutSubviews()
 
 		// Update media player layer frame
-		self.mediaPlayablePlayerLayer?.frame = CGRect(origin: CGPoint(), size: size)
+		self.mediaPlayablePlayerLayer?.frame = self.videoView.bounds
 
-		// Check if need to auto-hide controls
-		if self.mediaPlayablePlayerCanHideControls && (size.aspectRatio > 1.0) && (self.controlsView.alpha > 0.0) {
-			// Toggle controls visibility
-			toggleControlsVisibility()
+		// Check if need to update controls
+		if self.mediaPlayablePlayerCanHideControls {
+			// Setup
+			let	aspectRatio = self.view.bounds.size.aspectRatio
+
+			// Check if need to update controls
+			if (aspectRatio > 1.0) && (self.controlsView.alpha > 0.0) {
+				// Hide controls
+				toggleControlsVisibility()
+			} else if (aspectRatio < 1.0) && (self.controlsView.alpha < 1.0) {
+				// Show controls
+				toggleControlsVisibility()
+			}
 		}
 	}
 
@@ -346,6 +356,9 @@ class UKTMediaPlayerViewController : UKTViewController {
 			// Update UI
 			self.updateActionUI()
 			self.updatePositionUI()
+
+			// Call proc
+			self.mediaPlayablePlayerCurrentPositionUpdatedProc(self.mediaPlayablePlayerCurrentPosition)
 		}
 		self.mediaPlayablePlayer.playbackCompleteProc = { [unowned self] in
 			// Cleanup

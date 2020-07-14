@@ -13,15 +13,21 @@ import UIKit
 extension UIColor {
 
 	// MARK: Properties
+	var	rgba :(red :CGFloat, green :CGFloat, blue :CGFloat, alpha :CGFloat) {
+				// Setup
+				var	red :CGFloat = 0.0
+				var	green :CGFloat = 0.0
+				var	blue :CGFloat = 0.0
+				var	alpha :CGFloat = 0.0
+				getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+				return (red, green, blue, alpha)
+			}
 	var	asString :String {
 				// Setup
-				var	r :CGFloat = 0.0
-				var	g :CGFloat = 0.0
-				var	b :CGFloat = 0.0
-				var	a :CGFloat = 0.0
-				getRed(&r, green: &g, blue: &b, alpha: &a)
+				let	(red, green, blue, alpha) = self.rgba
 
-				return "rgba:\(r),\(g),\(b),\(a)"
+				return "rgba:\(red),\(green),\(blue),\(alpha)"
 			}
 
 	// MARK: Lifecycle methods
@@ -43,5 +49,15 @@ extension UIColor {
 			// Unknown
 			return nil
 		}
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	func rgbaEquals(_ other :UIColor) -> Bool {
+		// Get info
+		let	(red, green, blue, alpha) = self.rgba
+		let	(otherRed, otherGreen, otherBlue, otherAlpha) = other.rgba
+
+		return (red == otherRed) && (green == otherGreen) && (blue == otherBlue) && (alpha == otherAlpha)
 	}
 }

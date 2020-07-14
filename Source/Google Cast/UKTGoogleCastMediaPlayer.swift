@@ -216,6 +216,11 @@ class UKTGoogleCastMediaPlayer : NSObject, UKTMediaPlayablePlayer, GCKRemoteMedi
 // TODO: setAudio muted
 	}
 
+	//------------------------------------------------------------------------------------------------------------------
+	func setAudio(volume :Float) {
+// TODO: setAudio volume
+	}
+
 	// MARK: Private methods
 	//------------------------------------------------------------------------------------------------------------------
 	private func updatePlaybackInfo() {
