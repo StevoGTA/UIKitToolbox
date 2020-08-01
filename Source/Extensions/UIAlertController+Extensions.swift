@@ -9,7 +9,26 @@
 import UIKit
 
 //----------------------------------------------------------------------------------------------------------------------
-// MARK: UIAlertController extension
+// MARK: UIAlertActionInfo
+struct UIAlertActionInfo {
+
+	// MARK: Properties
+	let	title :String
+	let	style :UIAlertAction.Style
+	let	proc :() -> Void
+
+	// MARK: Lifecycle methods
+	//------------------------------------------------------------------------------------------------------------------
+	init(title :String, style :UIAlertAction.Style = .default, proc :@escaping () -> Void = {}) {
+		// Store
+		self.title = title
+		self.style = style
+		self.proc = proc
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// MARK: - UIAlertController extension
 extension UIAlertController {
 
 	// MARK: Lifecycle methods
@@ -33,5 +52,15 @@ extension UIAlertController {
 		// Add actions
 		addAction(UIAlertAction(title: actionButtonTitle, style: .default) { _ in actionProc() })
 		addAction(UIAlertAction(title: cancelButtonTitle, style: .default) { _ in cancelProc() })
+	}
+
+	// MARK: Instance methods
+	//------------------------------------------------------------------------------------------------------------------
+	func add(_ actionInfos :[UIAlertActionInfo]) {
+		// Add
+		actionInfos.forEach() { info in
+			// Add
+			addAction(UIAlertAction(title: info.title, style: info.style, handler: { _ in info.proc() }))
+		}
 	}
 }
