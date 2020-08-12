@@ -13,24 +13,27 @@ import UIKit
 class UKTRemoteImageImageView : UIImageView {
 
 	// MARK: Properties
-	private	var	t :Any?
+	private	var	item :Any?
 	private	var	remoteImageRetriever :UKTRemoteImageRetriever!
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func setup(with t :Any, remoteImageRetriever :UKTRemoteImageRetriever, defaultImage :UIImage? = nil) {
+	func setup(with item :Any, remoteImageRetriever :UKTRemoteImageRetriever, defaultImage :UIImage? = nil) {
 		// Cleanup if necessary
 		cleanup()
 
 		// Store
-		self.t = t
+		self.item = item
 		self.remoteImageRetriever = remoteImageRetriever
 
 		// Setup UI
 		self.image = defaultImage
 
 		// Query image
-		self.remoteImageRetriever.queryRemoteImage(for: self.t!) { [weak self] image in
+		self.remoteImageRetriever.queryRemoteImage(for: self.item!) { [weak self] image in
+			// Note that we are loaded
+			self?.item = nil
+
 			// Update UI
 			self?.image = image
 		}
@@ -39,10 +42,10 @@ class UKTRemoteImageImageView : UIImageView {
 	//------------------------------------------------------------------------------------------------------------------
 	func cleanup() {
 		// Check if we have a thing
-		if self.t != nil {
+		if self.item != nil {
 			// Cancel any remote image query that is in-flight
-			self.remoteImageRetriever.cancelQueryRemoteImage(for: self.t!)
-			self.t = nil
+			self.remoteImageRetriever.cancelQueryRemoteImage(for: self.item!)
+			self.item = nil
 		}
 	}
 }
