@@ -23,8 +23,9 @@ class UKTTextField : UITextField {
 		super.init(frame: frame)
 
 		// Setup notifications
-		NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self)
-				{ [unowned self] _ in self.textDidChangeProc(self.text!) }
+		self.notificationObservers.append(
+				NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self,
+						using: { [unowned self] _ in self.textDidChangeProc(self.text!) }))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -33,8 +34,9 @@ class UKTTextField : UITextField {
 		super.init(coder: coder)
 
 		// Setup notifications
-		NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self)
-				{ [unowned self] _ in self.textDidChangeProc(self.text!) }
+		self.notificationObservers.append(
+				NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self,
+						using: { [unowned self] _ in self.textDidChangeProc(self.text!) }))
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
