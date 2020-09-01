@@ -25,11 +25,11 @@ extension CGPDFDocument {
 
 			// Iterate page indexes
 			indexSet.forEach() {
-				// setup
+				// Setup
 				guard let page = self.page(at: $0 + 1) else { return }
-				let	boxRect = page.getBoxRect(.mediaBox)
 
 				// Add page
+				let	boxRect = page.getBoxRect(.mediaBox)
 				UIGraphicsBeginPDFPageWithInfo(boxRect, nil)
 
 				let	context = UIGraphicsGetCurrentContext()!
@@ -46,5 +46,35 @@ extension CGPDFDocument {
 		}
 
 		return data as Data
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	func image(for page :Int) -> UIImage? {
+		// Preflight
+		guard let page = self.page(at: page + 1) else { return nil }
+
+		// Setup
+		var	image :UIImage? = nil
+
+		// Run lean
+		autoreleasepool() {
+			// Setup
+			let	boxRect = page.getBoxRect(.mediaBox)
+			UIGraphicsBeginImageContext(boxRect.size)
+
+			let	context = UIGraphicsGetCurrentContext()!
+			context.interpolationQuality = .high
+			context.saveGState()
+			context.scaleBy(x: 1.0, y: -1.0)
+			context.translateBy(x: 0.0, y: -boxRect.height)
+			context.drawPDFPage(page)
+			context.restoreGState()
+
+			// Cleanup
+			image = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+		}
+
+		return image
 	}
 }
