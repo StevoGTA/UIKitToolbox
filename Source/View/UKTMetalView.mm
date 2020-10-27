@@ -50,6 +50,7 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(UKTMetalView* me
 		// Complete setup
 		self.delegate = self;
 
+		self.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 #if defined(DEBUG)
 		self.clearColor = MTLClearColorMake(0.5, 0.0, 0.25, 1.0);
 #endif
@@ -76,6 +77,7 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(UKTMetalView* me
 		self.device = MTLCreateSystemDefaultDevice();
 		self.delegate = self;
 
+		self.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
 #if defined(DEBUG)
 		self.clearColor = MTLClearColorMake(0.5, 0.0, 0.25, 1.0);
 #endif

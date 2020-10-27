@@ -216,6 +216,7 @@ static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 		// Error
 		CLogServices::logError(CString("OpenGL ES 3.0 setup failed with error ") +
 				CString(glCheckFramebufferStatus(GL_FRAMEBUFFER), 6, false, true));
+		AssertFailIf(true);
 	}
 }
 
