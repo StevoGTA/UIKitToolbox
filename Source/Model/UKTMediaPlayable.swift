@@ -13,6 +13,8 @@ import Foundation
 protocol UKTMediaPlayable {
 
 	// MARK: Properties
+	var	identifier :String { get }
 	var	title :String { get }
+	var	description :String? { get }
 	var	url :URL { get }
 }

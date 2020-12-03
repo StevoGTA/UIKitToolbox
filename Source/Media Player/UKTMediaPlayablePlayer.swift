@@ -6,6 +6,7 @@
 //  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
+import AVFoundation
 import Foundation
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21,7 +22,8 @@ protocol UKTMediaPlayablePlayer {
 	var	playbackCompleteProc :() -> Void { get set }
 
 	// MARK: Lifecycle methods
-	init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval) throws
+	init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval,
+			contentKeySession :AVContentKeySession?) throws
 
 	// MARK: Instance methods
 	func play()

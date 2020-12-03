@@ -23,6 +23,7 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 								_ volume :Float, _ isMuted :Bool) -> Void = { _,_,_,_,_ in }
 			var	playbackCompleteProc :() -> Void = {}
 
+	private	let	contentKeySession :AVContentKeySession?
 	private	let	avPlayer :AVPlayer
 	private	let	avPlayerLayer :AVPlayerLayer
 
@@ -30,10 +31,16 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	required init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval) throws {
-		// Setup
-		self.avPlayer = AVPlayer(url: mediaPlayable.url)
+	required init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval,
+			contentKeySession :AVContentKeySession?) throws {
+		// Store
+		self.contentKeySession = contentKeySession
 
+		// Setup
+		let	asset = AVURLAsset(url: mediaPlayable.url)
+		self.contentKeySession?.addContentKeyRecipient(asset)
+
+		self.avPlayer = AVPlayer(playerItem: AVPlayerItem(asset: asset))
 		self.avPlayerLayer = AVPlayerLayer(player: self.avPlayer)
 
 		// Do super

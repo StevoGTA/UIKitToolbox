@@ -6,6 +6,7 @@
 //  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
+import AVFoundation
 import GoogleCast
 import UIKit
 
@@ -70,15 +71,15 @@ class UKTMediaPlayerViewController : UKTViewController {
 
 	// MARK: Properties
 				var	action1 = Action.goToBeginning
-							{ didSet { setup(actionButton: self.actionButton1, action: self.action1) } }
+						{ didSet { setup(actionButton: self.actionButton1, action: self.action1) } }
 				var	action2 = Action.rewind
-							{ didSet { setup(actionButton: self.actionButton2, action: self.action2) } }
+						{ didSet { setup(actionButton: self.actionButton2, action: self.action2) } }
 				var	action3 = Action.playPause
-							{ didSet { setup(actionButton: self.actionButton3, action: self.action3) } }
+						{ didSet { setup(actionButton: self.actionButton3, action: self.action3) } }
 				var	action4 = Action.forward
-							{ didSet { setup(actionButton: self.actionButton4, action: self.action4) } }
+						{ didSet { setup(actionButton: self.actionButton4, action: self.action4) } }
 				var	action5 = Action.audio
-							{ didSet { setup(actionButton: self.actionButton5, action: self.action5) } }
+						{ didSet { setup(actionButton: self.actionButton5, action: self.action5) } }
 
 				var	rewindTimeDelta = TimeDelta._10s
 				var	forwardTimeDelta = TimeDelta._10s
@@ -117,6 +118,8 @@ class UKTMediaPlayerViewController : UKTViewController {
 	private		var	currentQueueItem :QueueItem?
 	private		var	currentQueueItemDuration :TimeInterval?
 
+	private		var	contentKeySession :AVContentKeySession?
+
 	private		var	mediaPlayablePlayer :UKTMediaPlayablePlayer!
 	private		var	mediaPlayablePlayerIsPlaying = false
 	private		var	mediaPlayablePlayerCurrentPosition :TimeInterval = 0.0
@@ -129,8 +132,8 @@ class UKTMediaPlayerViewController : UKTViewController {
 
 	// MARK: Class methods
 	//------------------------------------------------------------------------------------------------------------------
-	static func instantiate(with queueItems :[QueueItem], autoplay :Bool = true, controlMode :ControlMode = .full) ->
-			UKTMediaPlayerViewController {
+	static func instantiate(with queueItems :[QueueItem], autoplay :Bool = true, controlMode :ControlMode = .full,
+			contentKeySession :AVContentKeySession? = nil) -> UKTMediaPlayerViewController {
 		// Setup
 		let	mediaPlayerViewController =
 					UIStoryboard.init(name: "UKTMediaPlayerView", bundle: nil).instantiateInitialViewController() as!
@@ -138,6 +141,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 		mediaPlayerViewController.controlMode = controlMode
 		mediaPlayerViewController.queueItems = queueItems
 		mediaPlayerViewController.mediaPlayablePlayerIsPlaying = autoplay
+		mediaPlayerViewController.contentKeySession = contentKeySession
 
 		return mediaPlayerViewController
 	}
@@ -311,7 +315,8 @@ class UKTMediaPlayerViewController : UKTViewController {
 			self.mediaPlayablePlayer =
 					try! UKTGoogleCastMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
 							autoplay: self.mediaPlayablePlayerIsPlaying,
-							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition)
+							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
+							contentKeySession: self.contentKeySession)
 			self.castingMessageLabel.text = "Casting to \(UKTGoogleCastManager.shared.currentCastDeviceName!)"
 			self.mediaPlayablePlayerCanHideControls = false
 		} else {
@@ -319,7 +324,8 @@ class UKTMediaPlayerViewController : UKTViewController {
 			self.mediaPlayablePlayer =
 					try! UKTAVMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
 							autoplay: self.mediaPlayablePlayerIsPlaying,
-							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition)
+							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
+							contentKeySession: self.contentKeySession)
 
 			self.mediaPlayablePlayerLayer = (self.mediaPlayablePlayer as! UKTAVMediaPlayer).layer
 			self.mediaPlayablePlayerLayer!.frame = self.videoView.bounds
