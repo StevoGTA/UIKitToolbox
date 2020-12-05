@@ -204,11 +204,11 @@ static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 
 	self.gpuInternal =
 			new CGPU(
-					SGPUProcsInfo((COpenGLGPUAcquireContextProc) sAcquireContextProc,
-							(COpenGLGPUTryAcquireContextProc) sTryAcquireContextProc,
-							(COpenGLGPUReleaseContextProc) sReleaseContextProc,
-							(COpenGLGPUGetSizeProc) sGetSizeProc, (COpenGLGPUGetScaleProc) sGetScaleProc,
-							(COpenGLGPUGetRenderBufferStorageContextProc) sGetRenderBufferStorageContextProc,
+					SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContextProc,
+							(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContextProc,
+							(SGPUProcsInfo::ReleaseContextProc) sReleaseContextProc,
+							(SGPUProcsInfo::GetSizeProc) sGetSizeProc, (SGPUProcsInfo::GetScaleProc) sGetScaleProc,
+							(SGPUProcsInfo::GetRenderBufferStorageContextProc) sGetRenderBufferStorageContextProc,
 							(__bridge void*) self));
 
 	// Check for errors

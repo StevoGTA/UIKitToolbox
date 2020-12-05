@@ -57,11 +57,11 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(UKTMetalView* me
 
 		self.gpuInternal =
 				new CGPU(
-						SGPUProcsInfo((CMetalGPUGetDeviceProc) sGetDeviceProc,
-								(CMetalGPUGetCurrentDrawableProc) sGetCurrentDrawableProc,
-								(CMetalGPUGetPixelFormatProc) sGetPixelFormatProc,
-								(CMetalGPUGetSampleCountProc) sGetSampleCountProc,
-								(CMetalGPUGetCurrentRenderPassDescriptor) sGetCurrentRenderPassDescriptor,
+						SGPUProcsInfo((SGPUProcsInfo::GetDeviceProc) sGetDeviceProc,
+								(SGPUProcsInfo::GetCurrentDrawableProc) sGetCurrentDrawableProc,
+								(SGPUProcsInfo::GetPixelFormatProc) sGetPixelFormatProc,
+								(SGPUProcsInfo::GetSampleCountProc) sGetSampleCountProc,
+								(SGPUProcsInfo::GetCurrentRenderPassDescriptor) sGetCurrentRenderPassDescriptor,
 								(__bridge void*) self));
 	}
 
@@ -84,11 +84,11 @@ static	MTLRenderPassDescriptor*	sGetCurrentRenderPassDescriptor(UKTMetalView* me
 
 		self.gpuInternal =
 				new CGPU(
-						SGPUProcsInfo((CMetalGPUGetDeviceProc) sGetDeviceProc,
-								(CMetalGPUGetCurrentDrawableProc) sGetCurrentDrawableProc,
-								(CMetalGPUGetPixelFormatProc) sGetPixelFormatProc,
-								(CMetalGPUGetSampleCountProc) sGetSampleCountProc,
-								(CMetalGPUGetCurrentRenderPassDescriptor) sGetCurrentRenderPassDescriptor,
+						SGPUProcsInfo((SGPUProcsInfo::GetDeviceProc) sGetDeviceProc,
+								(SGPUProcsInfo::GetCurrentDrawableProc) sGetCurrentDrawableProc,
+								(SGPUProcsInfo::GetPixelFormatProc) sGetPixelFormatProc,
+								(SGPUProcsInfo::GetSampleCountProc) sGetSampleCountProc,
+								(SGPUProcsInfo::GetCurrentRenderPassDescriptor) sGetCurrentRenderPassDescriptor,
 								(__bridge void*) self));
 	}
 
