@@ -35,7 +35,7 @@ class UKTRemoteImageImageView : UIImageView {
 			self?.item = nil
 
 			// Update UI
-			self?.image = image
+			self?.image = image ?? UIImage(systemName: "exclamationmark.triangle")
 		}
 	}
 

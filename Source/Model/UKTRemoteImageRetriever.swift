@@ -13,6 +13,7 @@ import UIKit
 protocol UKTRemoteImageRetriever {
 
 	// MARK: Instance methods
-	func queryRemoteImage(for item :Any, completionProc :@escaping (_ image :UIImage) -> Void)
-	func cancelQueryRemoteImage(for item :Any)
+	func queryRemoteImage(for item :Any, size :CGSize, aspectFit :Bool,
+			completionProc :@escaping (_ image :UIImage?, _ error :Error?) -> Void) -> String
+	func cancelQueryRemoteImage(for identifier :String)
 }
