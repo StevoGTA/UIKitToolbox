@@ -13,39 +13,47 @@ import UIKit
 class UKTRemoteImageImageView : UIImageView {
 
 	// MARK: Properties
-	private	var	item :Any?
 	private	var	remoteImageRetriever :UKTRemoteImageRetriever!
+	private	var	identifier :String?
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func setup(with item :Any, remoteImageRetriever :UKTRemoteImageRetriever, defaultImage :UIImage? = nil) {
+	func setup(with item :Any, remoteImageRetriever :UKTRemoteImageRetriever, defaultImage :UIImage? = nil,
+			aspectFit :Bool = true) {
 		// Cleanup if necessary
 		cleanup()
 
 		// Store
-		self.item = item
 		self.remoteImageRetriever = remoteImageRetriever
 
-		// Setup UI
-		self.image = defaultImage
+		// Setup
+		if let image = self.remoteImageRetriever.image(for: item, size: self.bounds.size, aspectFit: aspectFit) {
+			// Have image
+			self.image = image
+		} else {
+			// Must retrieve image
+			self.image = defaultImage
 
-		// Query image
-		self.remoteImageRetriever.queryRemoteImage(for: self.item!) { [weak self] image in
-			// Note that we are loaded
-			self?.item = nil
+			// Query image
+			self.identifier =
+					self.remoteImageRetriever.retrieveRemoteImage(for: item, size: self.bounds.size,
+							aspectFit: aspectFit) { [weak self] image, error in
+								// Note that we are loaded
+								self?.identifier = nil
 
-			// Update UI
-			self?.image = image ?? UIImage(systemName: "exclamationmark.triangle")
+								// Update UI
+								self?.image = image ?? UIImage(systemName: "exclamationmark.triangle")
+							}
 		}
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
 	func cleanup() {
 		// Check if we have a thing
-		if self.item != nil {
+		if self.identifier != nil {
 			// Cancel any remote image query that is in-flight
-			self.remoteImageRetriever.cancelQueryRemoteImage(for: self.item!)
-			self.item = nil
+			self.remoteImageRetriever.cancelRetrieveRemoteImage(for: self.identifier!)
+			self.identifier = nil
 		}
 	}
 }
