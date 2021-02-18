@@ -22,8 +22,8 @@ protocol UKTMediaPlayablePlayer {
 	var	playbackCompleteProc :() -> Void { get set }
 
 	// MARK: Lifecycle methods
-	init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval,
-			contentKeySession :AVContentKeySession?) throws
+	init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval, drmInfo :UKTDRMInfo?)
+			throws
 
 	// MARK: Instance methods
 	func play()

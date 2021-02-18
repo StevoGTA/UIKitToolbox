@@ -7,8 +7,11 @@
 //
 
 import AVFoundation
-import GoogleCast
 import UIKit
+
+#if !targetEnvironment(macCatalyst)
+	import GoogleCast
+#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: UKTMediaPlayerViewController
@@ -70,70 +73,74 @@ class UKTMediaPlayerViewController : UKTViewController {
 	}
 
 	// MARK: Properties
-				var	action1 = Action.goToBeginning
-						{ didSet { setup(actionButton: self.actionButton1, action: self.action1) } }
-				var	action2 = Action.rewind
-						{ didSet { setup(actionButton: self.actionButton2, action: self.action2) } }
-				var	action3 = Action.playPause
-						{ didSet { setup(actionButton: self.actionButton3, action: self.action3) } }
-				var	action4 = Action.forward
-						{ didSet { setup(actionButton: self.actionButton4, action: self.action4) } }
-				var	action5 = Action.audio
-						{ didSet { setup(actionButton: self.actionButton5, action: self.action5) } }
+#if !targetEnvironment(macCatalyst)
+	static				var	googleCastManager :UKTGoogleCastManager?
+#endif
 
-				var	rewindTimeDelta = TimeDelta._10s
-				var	forwardTimeDelta = TimeDelta._10s
+						var	action1 = Action.goToBeginning
+								{ didSet { setup(actionButton: self.actionButton1, action: self.action1) } }
+						var	action2 = Action.rewind
+								{ didSet { setup(actionButton: self.actionButton2, action: self.action2) } }
+						var	action3 = Action.playPause
+								{ didSet { setup(actionButton: self.actionButton3, action: self.action3) } }
+						var	action4 = Action.forward
+								{ didSet { setup(actionButton: self.actionButton4, action: self.action4) } }
+						var	action5 = Action.audio
+								{ didSet { setup(actionButton: self.actionButton5, action: self.action5) } }
 
-				var	posterImageInfoProc
-							:(_ queueItem :QueueItem) ->
-									(t :Any, remoteImageRetriever :UKTRemoteImageRetriever)? = { _ in return nil }
-				var	infoProc :(_ queueItem :QueueItem) -> String? = { _ in return nil }
-				var	mediaPlayablePlayerCurrentPositionUpdatedProc :(_ currentPosition :TimeInterval) -> Void = { _ in }
-				var	closeProc :() -> Void = {}
+						var	rewindTimeDelta = TimeDelta._10s
+						var	forwardTimeDelta = TimeDelta._10s
 
-	@IBOutlet	var	posterImageView :UKTRemoteImageImageView!
-	@IBOutlet	var	posterImageOverlayView :UIVisualEffectView!
+						var	posterImageInfoProc
+									:(_ queueItem :QueueItem) ->
+											(t :Any, remoteImageRetriever :UKTRemoteImageRetriever)? = { _ in return nil }
+						var	infoProc :(_ queueItem :QueueItem) -> String? = { _ in return nil }
+						var	mediaPlayablePlayerCurrentPositionUpdatedProc :(_ currentPosition :TimeInterval) -> Void = { _ in }
+						var	closeProc :() -> Void = {}
 
-	@IBOutlet	var	videoView :UIView!
+			@IBOutlet	var	posterImageView :UKTRemoteImageImageView!
+			@IBOutlet	var	posterImageOverlayView :UIVisualEffectView!
 
-	@IBOutlet	var	activityIndicatorView :UIActivityIndicatorView!
+			@IBOutlet	var	videoView :UIView!
 
-	@IBOutlet	var	controlsView :UIView!
-	@IBOutlet	var	googleCastButton :GCKUICastButton!
-	@IBOutlet	var	titleLabel :UILabel!
-	@IBOutlet	var	infoLabel :UILabel!
-	@IBOutlet	var	castingMessageLabel :UILabel!
-	@IBOutlet	var	positionSlider :UISlider!
-	@IBOutlet	var	leadingTimeLabel :UILabel!
-	@IBOutlet	var	trailingTimeLabel :UILabel!
-	@IBOutlet	var	actionButton1 :UIButton!
-	@IBOutlet	var	actionButton2 :UIButton!
-	@IBOutlet	var	actionButton3 :UIButton!
-	@IBOutlet	var	actionButton4 :UIButton!
-	@IBOutlet	var	actionButton5 :UIButton!
+			@IBOutlet	var	activityIndicatorView :UIActivityIndicatorView!
 
-	private		var	controlMode = ControlMode.full
+			@IBOutlet	var	controlsView :UIView!
+			@IBOutlet	var	titleLabel :UILabel!
+			@IBOutlet	var	infoLabel :UILabel!
+			@IBOutlet	var	castingMessageLabel :UILabel!
+			@IBOutlet	var	positionSlider :UISlider!
+			@IBOutlet	var	leadingTimeLabel :UILabel!
+			@IBOutlet	var	trailingTimeLabel :UILabel!
+			@IBOutlet	var	actionButton1 :UIButton!
+			@IBOutlet	var	actionButton2 :UIButton!
+			@IBOutlet	var	actionButton3 :UIButton!
+			@IBOutlet	var	actionButton4 :UIButton!
+			@IBOutlet	var	actionButton5 :UIButton!
 
-	private		var	queueItems :[QueueItem]!
-	private		var	currentQueueItem :QueueItem?
-	private		var	currentQueueItemDuration :TimeInterval?
+			private		var	controlMode = ControlMode.full
 
-	private		var	contentKeySession :AVContentKeySession?
+			private		var	queueItems :[QueueItem]!
+			private		var	currentQueueItem :QueueItem?
+			private		var	currentQueueItemDuration :TimeInterval?
+			private		var	currentQueueItemDRMInfo :UKTDRMInfo?
 
-	private		var	mediaPlayablePlayer :UKTMediaPlayablePlayer!
-	private		var	mediaPlayablePlayerIsPlaying = false
-	private		var	mediaPlayablePlayerCurrentPosition :TimeInterval = 0.0
-	private		var	mediaPlayablePlayerCurrentVolume :Float?
-	private		var	mediaPlayablePlayerIsMuted :Bool?
-	private		var	mediaPlayablePlayerCanHideControls = false
-	private		var	mediaPlayablePlayerLayer :CALayer?
+			private		var	queryDRMInfoProc :UKTDRMInfo.QueryProc?
 
-	private		var	positionIsChanging = false
+			private		var	mediaPlayablePlayer :UKTMediaPlayablePlayer!
+			private		var	mediaPlayablePlayerIsPlaying = false
+			private		var	mediaPlayablePlayerCurrentPosition :TimeInterval = 0.0
+			private		var	mediaPlayablePlayerCurrentVolume :Float?
+			private		var	mediaPlayablePlayerIsMuted :Bool?
+			private		var	mediaPlayablePlayerCanHideControls = false
+			private		var	mediaPlayablePlayerLayer :CALayer?
+
+			private		var	positionIsChanging = false
 
 	// MARK: Class methods
 	//------------------------------------------------------------------------------------------------------------------
 	static func instantiate(with queueItems :[QueueItem], autoplay :Bool = true, controlMode :ControlMode = .full,
-			contentKeySession :AVContentKeySession? = nil) -> UKTMediaPlayerViewController {
+			queryDRMInfoProc :UKTDRMInfo.QueryProc? = nil) -> UKTMediaPlayerViewController {
 		// Setup
 		let	mediaPlayerViewController =
 					UIStoryboard.init(name: "UKTMediaPlayerView", bundle: nil).instantiateInitialViewController() as!
@@ -141,7 +148,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 		mediaPlayerViewController.controlMode = controlMode
 		mediaPlayerViewController.queueItems = queueItems
 		mediaPlayerViewController.mediaPlayablePlayerIsPlaying = autoplay
-		mediaPlayerViewController.contentKeySession = contentKeySession
+		mediaPlayerViewController.queryDRMInfoProc = queryDRMInfoProc
 
 		return mediaPlayerViewController
 	}
@@ -153,10 +160,12 @@ class UKTMediaPlayerViewController : UKTViewController {
 		super.viewDidLoad()
 
 		// Setup Notifications
+#if !targetEnvironment(macCatalyst)
 		addNotificationObserver(forName: .googleCastManagerCastSessionStateChanged) { [unowned self] _ in
 			// Change media player
-			self.setupMediaPlayer()
+			self.prepareCurrentQueueItem()
 		}
+#endif
 
 		// Setup UI
 		if self.controlMode == .none {
@@ -184,20 +193,20 @@ class UKTMediaPlayerViewController : UKTViewController {
 		// Update media player layer frame
 		self.mediaPlayablePlayerLayer?.frame = self.videoView.bounds
 
-		// Check if need to update controls
-		if self.mediaPlayablePlayerCanHideControls {
-			// Setup
-			let	aspectRatio = self.view.bounds.size.aspectRatio
-
-			// Check if need to update controls
-			if (aspectRatio > 1.0) && (self.controlsView.alpha > 0.0) {
-				// Hide controls
-				toggleControlsVisibility()
-			} else if (aspectRatio < 1.0) && (self.controlsView.alpha < 1.0) {
-				// Show controls
-				toggleControlsVisibility()
-			}
-		}
+//		// Check if need to update controls
+//		if self.mediaPlayablePlayerCanHideControls {
+//			// Setup
+//			let	aspectRatio = self.view.bounds.size.aspectRatio
+//
+//			// Check if need to update controls
+//			if (aspectRatio > 1.0) && (self.controlsView.alpha > 0.0) {
+//				// Hide controls
+//				toggleControlsVisibility()
+//			} else if (aspectRatio < 1.0) && (self.controlsView.alpha < 1.0) {
+//				// Show controls
+//				toggleControlsVisibility()
+//			}
+//		}
 	}
 
 	// MARK: Instance methods
@@ -285,7 +294,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 		// Setup Media Player
 		self.mediaPlayablePlayerIsPlaying = true
 		self.mediaPlayablePlayerCurrentPosition = self.currentQueueItem!.startOffsetTimeInterval
-		setupMediaPlayer()
+		prepareCurrentQueueItem()
 
 		// Update UI
 		self.titleLabel.text = self.currentQueueItem!.mediaPlayable.title
@@ -302,30 +311,81 @@ class UKTMediaPlayerViewController : UKTViewController {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	private func setupMediaPlayer() {
+	private func prepareCurrentQueueItem() {
 		// Stop current media player
 		self.mediaPlayablePlayer = nil
 
 		self.mediaPlayablePlayerLayer?.removeFromSuperlayer()
 		self.mediaPlayablePlayerLayer = nil
 
-		// Setup media player
-		if UKTGoogleCastManager.shared.hasCurrentSession {
-			// Use Google Cast
-			self.mediaPlayablePlayer =
-					try! UKTGoogleCastMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
-							autoplay: self.mediaPlayablePlayerIsPlaying,
-							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
-							contentKeySession: self.contentKeySession)
-			self.castingMessageLabel.text = "Casting to \(UKTGoogleCastManager.shared.currentCastDeviceName!)"
-			self.mediaPlayablePlayerCanHideControls = false
+		// Check if need to query DRM info
+		if let queryDRMInfoProc = self.queryDRMInfoProc {
+			// Yes
+			self.activityIndicatorView.startAnimating()
+			self.controlsView.alpha = 0.0
+
+			// Query DRM info
+			queryDRMInfoProc(type(of: self).googleCastManager?.hasCurrentSession ?? false) { [weak self] in
+				// Handle results
+				self?.currentQueueItemDRMInfo = $0
+
+				// Update UI
+				self?.activityIndicatorView.stopAnimating()
+				self?.controlsView.alpha = 1.0
+
+				// Check error
+				if $1 == nil {
+					// Setup media Player
+					self?.setupMediaPlayer()
+				} else {
+					// Present error
+					self?.presentAlert($1!,
+							actionProc: {
+								// Check queue
+								if !(self?.queueItems.isEmpty ?? true) {
+									// Play next item
+									self?.playNextQueueItem()
+								} else {
+									// Dismiss
+									self?.dismissAnimated()
+								}
+							})
+				}
+			}
 		} else {
+			// No
+			setupMediaPlayer()
+		}
+	}
+
+	//------------------------------------------------------------------------------------------------------------------
+	private func setupMediaPlayer() {
+		// Setup media player
+#if !targetEnvironment(macCatalyst)
+		if let googleCastManager = type(of: self).googleCastManager, googleCastManager.hasCurrentSession {
+			// Try to use Google Cast
+			do {
+				// Setup
+				self.mediaPlayablePlayer =
+						try UKTGoogleCastMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
+								autoplay: self.mediaPlayablePlayerIsPlaying,
+								startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
+								drmInfo: self.currentQueueItemDRMInfo)
+				self.castingMessageLabel.text = "Casting to \(googleCastManager.currentCastDeviceName!)"
+				self.mediaPlayablePlayerCanHideControls = false
+			} catch {
+				// Error
+				NSLog("UKTMediaPlayerViewController encountered error when setting up Google Cast: \(error)")
+			}
+		}
+
+		if self.mediaPlayablePlayer == nil {
 			// Use AVFoundation
 			self.mediaPlayablePlayer =
 					try! UKTAVMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
 							autoplay: self.mediaPlayablePlayerIsPlaying,
 							startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
-							contentKeySession: self.contentKeySession)
+							drmInfo: self.currentQueueItemDRMInfo)
 
 			self.mediaPlayablePlayerLayer = (self.mediaPlayablePlayer as! UKTAVMediaPlayer).layer
 			self.mediaPlayablePlayerLayer!.frame = self.videoView.bounds
@@ -334,6 +394,20 @@ class UKTMediaPlayerViewController : UKTViewController {
 			self.castingMessageLabel.text = ""
 			self.mediaPlayablePlayerCanHideControls = true
 		}
+#else
+		// Use AVFoundation
+		self.mediaPlayablePlayer =
+				try! UKTAVMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
+						autoplay: self.mediaPlayablePlayerIsPlaying,
+						startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition, drmInfo: self.drmInfo)
+
+		self.mediaPlayablePlayerLayer = (self.mediaPlayablePlayer as! UKTAVMediaPlayer).layer
+		self.mediaPlayablePlayerLayer!.frame = self.videoView.bounds
+		self.videoView.layer.addSublayer(self.mediaPlayablePlayerLayer!)
+
+		self.castingMessageLabel.text = ""
+		self.mediaPlayablePlayerCanHideControls = true
+#endif
 
 		// Setup Media Player
 		self.mediaPlayablePlayer.noteActivityProc = { [unowned self] in
@@ -348,7 +422,7 @@ class UKTMediaPlayerViewController : UKTViewController {
 		}
 		self.mediaPlayablePlayer.noteErrorProc = { [unowned self] error, shouldClose in
 			// Present error
-			self.presentAlert(error) { if shouldClose { self.dismissAnimated() } }
+			self.presentAlert(error, actionProc: { if shouldClose { self.dismissAnimated() } })
 		}
 		self.mediaPlayablePlayer.notePlaybackInfoProc = { [unowned self] in
 			// Store

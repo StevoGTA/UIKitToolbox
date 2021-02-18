@@ -32,9 +32,9 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
 	required init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval,
-			contentKeySession :AVContentKeySession?) throws {
+			drmInfo :UKTDRMInfo? = nil) throws {
 		// Store
-		self.contentKeySession = contentKeySession
+		self.contentKeySession = drmInfo?.contentKeySession
 
 		// Setup
 		let	asset = AVURLAsset(url: mediaPlayable.url)

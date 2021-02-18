@@ -6,6 +6,8 @@
 //  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
+#if !targetEnvironment(macCatalyst)
+
 import GoogleCast
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24,20 +26,18 @@ extension Notification.Name {
 class UKTGoogleCastManager : NSObject, GCKLoggerDelegate, GCKSessionManagerListener {
 
 	// MARK: Properties
-	static			let	shared = UKTGoogleCastManager()
-
-					var	hasCurrentSession :Bool { GCKCastContext.sharedInstance().sessionManager.currentSession != nil }
-					var	currentCastDeviceName :String?
-								{ GCKCastContext.sharedInstance().sessionManager.currentSession?.device.friendlyName }
+	var	hasCurrentSession :Bool { GCKCastContext.sharedInstance().sessionManager.currentSession != nil }
+	var	currentCastDeviceName :String?
+				{ GCKCastContext.sharedInstance().sessionManager.currentSession?.device.friendlyName }
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	override init() {
+	init(applicationID :String = kGCKDefaultMediaReceiverApplicationID) {
 		// Do super
 		super.init()
 
 		// Setup Google Cast
-		let	discoveryCriteria = GCKDiscoveryCriteria(applicationID: kGCKDefaultMediaReceiverApplicationID)
+		let	discoveryCriteria = GCKDiscoveryCriteria(applicationID: applicationID)
 
 		let	castOptions = GCKCastOptions(discoveryCriteria: discoveryCriteria)
 		castOptions.physicalVolumeButtonsWillControlDeviceVolume = true
@@ -124,3 +124,5 @@ class UKTGoogleCastManager : NSObject, GCKLoggerDelegate, GCKSessionManagerListe
 		NotificationCenter.default.post(name: .googleCastManagerCastSessionStateChanged, object: self)
 	}
 }
+
+#endif

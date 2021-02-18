@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="IFp-4h-L7p">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="IFp-4h-L7p">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -243,6 +244,7 @@
                                 </connections>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="0rD-RI-zVV"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="0rD-RI-zVV" firstAttribute="leading" secondItem="IDl-hj-cRB" secondAttribute="leading" id="2tM-B4-tPs"/>
@@ -264,7 +266,6 @@
                             <constraint firstItem="gpC-gR-hBb" firstAttribute="leading" secondItem="d2I-yp-88q" secondAttribute="leading" id="rfX-7l-RzU"/>
                             <constraint firstItem="qG2-83-E1b" firstAttribute="centerY" secondItem="Ozd-5G-jnF" secondAttribute="centerY" id="xYF-5C-8BB"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="0rD-RI-zVV"/>
                     </view>
                     <connections>
                         <outlet property="actionButton1" destination="Wqa-p2-zeY" id="pMm-4U-LKb"/>
@@ -275,7 +276,6 @@
                         <outlet property="activityIndicatorView" destination="rtV-ha-erx" id="17w-Yj-B2F"/>
                         <outlet property="castingMessageLabel" destination="WlI-Mp-KN6" id="DXQ-JB-s30"/>
                         <outlet property="controlsView" destination="IDl-hj-cRB" id="Jfv-Nh-iCT"/>
-                        <outlet property="googleCastButton" destination="LfZ-SI-VPc" id="fKq-Lw-kda"/>
                         <outlet property="infoLabel" destination="Wzb-6G-dDm" id="XFM-di-QIh"/>
                         <outlet property="leadingTimeLabel" destination="t4v-Q9-CfK" id="l6Y-8N-NgJ"/>
                         <outlet property="positionSlider" destination="X5s-Q7-5qF" id="y42-Cj-bLi"/>
@@ -302,6 +302,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="xmark.circle" catalog="system" width="32" height="32"/>
+        <image name="xmark.circle" catalog="system" width="128" height="121"/>
     </resources>
 </document>

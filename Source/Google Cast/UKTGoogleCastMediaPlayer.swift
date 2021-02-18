@@ -6,6 +6,9 @@
 //  Copyright © 2020 Stevo Brock. All rights reserved.
 //
 
+#if !targetEnvironment(macCatalyst)
+
+import AVFoundation
 import Foundation
 import GoogleCast
 
@@ -14,6 +17,7 @@ import GoogleCast
 enum UKTGoogleCastMediaPlayerError : Error {
 	case noCurrentSession
 	case cannotPlayRemoteMedia
+	case invalidMediaPlayable
 }
 
 extension UKTGoogleCastMediaPlayerError : LocalizedError {
@@ -24,6 +28,7 @@ extension UKTGoogleCastMediaPlayerError : LocalizedError {
 						switch self {
 							case .noCurrentSession:	return "No current session"
 							case .cannotPlayRemoteMedia: return "Cannot play remote media"
+							case .invalidMediaPlayable: return "Invalid content"
 						}
 					}
 }
@@ -47,15 +52,18 @@ class UKTGoogleCastMediaPlayer : NSObject, UKTMediaPlayablePlayer, GCKRemoteMedi
 
 	// MARK: Lifecycle methods
 	//------------------------------------------------------------------------------------------------------------------
-	required init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval) throws {
+	required init(mediaPlayable :UKTMediaPlayable, autoplay :Bool, startOffsetTimeInterval :TimeInterval,
+			drmInfo :UKTDRMInfo?) throws {
 		// Setup
 		guard let session = GCKCastContext.sharedInstance().sessionManager.currentSession else
 				{ throw UKTGoogleCastMediaPlayerError.noCurrentSession }
 		guard let remoteMediaClient = session.remoteMediaClient else
 				{ throw UKTGoogleCastMediaPlayerError.cannotPlayRemoteMedia }
+		guard let googleCastable = mediaPlayable as? UKTGoogleCastable else
+				{ throw UKTGoogleCastMediaPlayerError.invalidMediaPlayable }
 
 		// Store
-		self.googleCastable = mediaPlayable as! UKTGoogleCastable
+		self.googleCastable = googleCastable
 		self.remoteMediaClient = remoteMediaClient
 
 		// Do super
@@ -87,9 +95,17 @@ class UKTGoogleCastMediaPlayer : NSObject, UKTMediaPlayablePlayer, GCKRemoteMedi
 
 			let	url = strongSelf.googleCastable.url
 			let	mediaInfoBuilder = GCKMediaInformationBuilder(contentURL: url)
-			mediaInfoBuilder.streamType = url.absoluteString.hasSuffix("mp4") ? .buffered : .live
-			mediaInfoBuilder.contentType = url.absoluteString.hasSuffix("mp4") ? "video/mp4" : "application/x-mpegurl"
+//			mediaInfoBuilder.streamType = url.absoluteString.hasSuffix("mp4") ? .buffered : .live
+			mediaInfoBuilder.streamType = .buffered
+//			mediaInfoBuilder.streamType = .none
+//			mediaInfoBuilder.contentType = url.absoluteString.hasSuffix("mp4") ? "video/mp4" : "video/m3u"
+			mediaInfoBuilder.contentType = "video/mp4"
 			mediaInfoBuilder.metadata = metadata
+
+			var	customData = [String : Any]()
+			customData["licenseURL"] = drmInfo?.widevineLicenseURL?.absoluteString
+			customData["licenseHeaders"] = drmInfo?.widevineLicenseHeaders
+			mediaInfoBuilder.customData = customData
 
 			// Build
 			let mediaInformation = mediaInfoBuilder.build()
@@ -235,3 +251,5 @@ class UKTGoogleCastMediaPlayer : NSObject, UKTMediaPlayablePlayer, GCKRemoteMedi
 				mediaStatus.isMuted)
 	}
 }
+
+#endif
