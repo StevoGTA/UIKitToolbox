@@ -13,6 +13,7 @@ import Foundation
 protocol UKTGoogleCastable : UKTMediaPlayable {
 
 	// MARK: Properties
+	var	googleCastableURL :URL { get }
 	var	subtitle :String { get }
 	var	posterURL :URL? { get }
 }
