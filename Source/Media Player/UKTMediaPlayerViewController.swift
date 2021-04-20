@@ -325,7 +325,22 @@ class UKTMediaPlayerViewController : UKTViewController {
 			self.controlsView.alpha = 0.0
 
 			// Query DRM info
-			queryDRMInfoProc(type(of: self).googleCastManager?.hasCurrentSession ?? false) { [weak self] in
+			let	drmRequest :UKTDRMInfo.DRMRequest
+#if !targetEnvironment(macCatalyst)
+			// iOS
+			if let googleCastManager = type(of: self).googleCastManager,
+					let deviceName = googleCastManager.currentCastDeviceName {
+				// Have Google Cast Session
+				drmRequest = .widevine(deviceName: deviceName)
+			} else {
+				// Don't have Google Cast Session
+				drmRequest = .fairPlay
+			}
+#else
+			// Mac Catalyst
+			drmRequest = .fairPlay
+#endif
+			queryDRMInfoProc(drmRequest) { [weak self] in
 				// Handle results
 				self?.currentQueueItemDRMInfo = $0
 
@@ -399,7 +414,8 @@ class UKTMediaPlayerViewController : UKTViewController {
 		self.mediaPlayablePlayer =
 				try! UKTAVMediaPlayer(mediaPlayable: self.currentQueueItem!.mediaPlayable,
 						autoplay: self.mediaPlayablePlayerIsPlaying,
-						startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition, drmInfo: self.drmInfo)
+						startOffsetTimeInterval: self.mediaPlayablePlayerCurrentPosition,
+						drmInfo: self.currentQueueItemDRMInfo)
 
 		self.mediaPlayablePlayerLayer = (self.mediaPlayablePlayer as! UKTAVMediaPlayer).layer
 		self.mediaPlayablePlayerLayer!.frame = self.videoView.bounds
