@@ -10,6 +10,23 @@ import AVFoundation
 import Foundation
 
 //----------------------------------------------------------------------------------------------------------------------
+// MARK: UKTAVMediaPlayerError
+enum UKTAVMediaPlayerError : Error {
+	case unknown
+}
+
+extension UKTAVMediaPlayerError : LocalizedError {
+
+	// MARK: Properties
+	public	var	errorDescription :String? {
+						// What are we
+						switch self {
+							case .unknown: return "Unknown error"
+						}
+					}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
 // MARK: UKTAVMediaPlayer
 class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 
@@ -50,7 +67,10 @@ class UKTAVMediaPlayer : NSObject, UKTMediaPlayablePlayer {
 		addNotificationObserver(forName: .AVPlayerItemDidPlayToEndTime, object: self.avPlayer.currentItem)
 				{ [unowned self] _ in self.playbackCompleteProc() }
 		addNotificationObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: self.avPlayer.currentItem)
-				{ [unowned self] _ in self.noteErrorProc(self.avPlayer.currentItem!.error!, true) }
+				{ [unowned self] _ in
+					// Call proc
+					self.noteErrorProc(self.avPlayer.currentItem!.error ?? UKTAVMediaPlayerError.unknown, true)
+				}
 		self.avPlayer.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: nil)
 				{ [weak self] in
 					// Ensure we are still around
