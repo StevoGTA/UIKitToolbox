@@ -17,12 +17,13 @@
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: Local procs declaration
 
-static	void		sAcquireContextProc(UKTOpenGLView* openGLView);
-static	bool		sTryAcquireContextProc(UKTOpenGLView* openGLView);
-static	void		sReleaseContextProc(UKTOpenGLView* openGLView);
-static	S2DSizeU16	sGetSizeProc(UKTOpenGLView* openGLView);
-static	Float32		sGetScaleProc(UKTOpenGLView* openGLView);
-static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
+static	void			sAcquireContext(UKTOpenGLView* openGLView);
+static	bool			sTryAcquireContext(UKTOpenGLView* openGLView);
+static	void			sReleaseContext(UKTOpenGLView* openGLView);
+static	S2DSizeU16		sGetSize(UKTOpenGLView* openGLView);
+static	Float32			sGetScale(UKTOpenGLView* openGLView);
+static	void*			sGetRenderBufferStorageContext(UKTOpenGLView* openGLView);
+static	CVEAGLContext	sGetContext(UKTOpenGLView* openGLView);
 
 //----------------------------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------
@@ -204,12 +205,12 @@ static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 
 	self.gpuInternal =
 			new CGPU(
-					SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContextProc,
-							(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContextProc,
-							(SGPUProcsInfo::ReleaseContextProc) sReleaseContextProc,
-							(SGPUProcsInfo::GetSizeProc) sGetSizeProc, (SGPUProcsInfo::GetScaleProc) sGetScaleProc,
-							(SGPUProcsInfo::GetRenderBufferStorageContextProc) sGetRenderBufferStorageContextProc,
-							(__bridge void*) self));
+					SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContext,
+							(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContext,
+							(SGPUProcsInfo::ReleaseContextProc) sReleaseContext,
+							(SGPUProcsInfo::GetSizeProc) sGetSize, (SGPUProcsInfo::GetScaleProc) sGetScale,
+							(SGPUProcsInfo::GetRenderBufferStorageContextProc) sGetRenderBufferStorageContext,
+							(SGPUProcsInfo::GetContextProc) sGetContext, (__bridge void*) self));
 
 	// Check for errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -276,37 +277,43 @@ static	void*		sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView);
 // MARK: - Local proc definitions
 
 //----------------------------------------------------------------------------------------------------------------------
-void sAcquireContextProc(UKTOpenGLView* openGLView)
+void sAcquireContext(UKTOpenGLView* openGLView)
 {
 	[openGLView acquireContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-bool sTryAcquireContextProc(UKTOpenGLView* openGLView)
+bool sTryAcquireContext(UKTOpenGLView* openGLView)
 {
 	return [openGLView tryAcquireContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void sReleaseContextProc(UKTOpenGLView* openGLView)
+void sReleaseContext(UKTOpenGLView* openGLView)
 {
 	[openGLView releaseContext];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-S2DSizeU16 sGetSizeProc(UKTOpenGLView* openGLView)
+S2DSizeU16 sGetSize(UKTOpenGLView* openGLView)
 {
 	return S2DSizeU16(openGLView.bounds.size.width, openGLView.bounds.size.height);
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-Float32 sGetScaleProc(UKTOpenGLView* openGLView)
+Float32 sGetScale(UKTOpenGLView* openGLView)
 {
 	return openGLView.contentScaleFactor;
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-void* sGetRenderBufferStorageContextProc(UKTOpenGLView* openGLView)
+void* sGetRenderBufferStorageContext(UKTOpenGLView* openGLView)
 {
 	return (__bridge void*) openGLView.layer;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+CVEAGLContext sGetContext(UKTOpenGLView* openGLView)
+{
+	return openGLView.context;
 }
