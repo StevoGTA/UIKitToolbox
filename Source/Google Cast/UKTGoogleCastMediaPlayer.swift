@@ -93,7 +93,7 @@ class UKTGoogleCastMediaPlayer : NSObject, UKTMediaPlayablePlayer, GCKRemoteMedi
 				metadata.addImage(GCKImage(url: posterURL, width: 0, height: 0))
 			}
 
-			let	url = strongSelf.googleCastable.url
+			let	url = strongSelf.googleCastable.googleCastableURL
 			let	mediaInfoBuilder = GCKMediaInformationBuilder(contentURL: url)
 //			mediaInfoBuilder.streamType = url.absoluteString.hasSuffix("mp4") ? .buffered : .live
 			mediaInfoBuilder.streamType = .buffered

@@ -12,9 +12,15 @@ import AVKit
 // MARK: UKTDRMInfo
 struct UKTDRMInfo {
 
-	// MARK: Types
+	// MARK: DRMRequest
+	enum DRMRequest {
+		case fairPlay
+		case widevine(deviceName :String)
+	}
+
+	// MARK: Procs
 	typealias Proc = (_ drmInfo :UKTDRMInfo?, _ error :Error?) -> Void
-	typealias QueryProc = (_ preferWidevine :Bool, _ completionProc :@escaping Proc) -> Void
+	typealias QueryProc = (_ drmRequest :DRMRequest, _ completionProc :@escaping Proc) -> Void
 
 	// MARK: Properties
 	let	contentKeySession: AVContentKeySession?
