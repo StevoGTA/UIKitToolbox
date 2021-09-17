@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)	void	(^motionBeganProc)(UIEventSubtype eventSubtype, UIEvent* event);
 @property (nonatomic, strong)	void	(^motionEndedProc)(UIEventSubtype eventSubtype, UIEvent* event);
 
-@property (nonatomic, strong)	void	(^periodicProc)(UniversalTime outputTime);
+@property (nonatomic, strong)	void	(^periodicProc)(UniversalTimeInterval outputTime);
 
 // MARK: Instance methods
 - (void) installPeriodic;
