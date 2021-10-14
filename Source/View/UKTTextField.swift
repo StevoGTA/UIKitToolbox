@@ -9,10 +9,11 @@ import UIKit
 
 //----------------------------------------------------------------------------------------------------------------------
 // MARK: UKTTextField
-class UKTTextField : UITextField {
+class UKTTextField : UITextField, UITextFieldDelegate {
 
 	// MARK: Properties
 			var	textDidChangeProc :(_ text :String) -> Void = { _ in }
+			var	shouldReturnProc :(_ textField :UKTTextField) -> Bool = { _ in false }
 
 	private	var	notificationObservers = [NSObjectProtocol]()
 
@@ -21,6 +22,9 @@ class UKTTextField : UITextField {
 	override init(frame :CGRect) {
 		// Do super
 		super.init(frame: frame)
+
+		// Setup
+		self.delegate = self
 
 		// Setup notifications
 		self.notificationObservers.append(
@@ -33,6 +37,9 @@ class UKTTextField : UITextField {
 		// Do super
 		super.init(coder: coder)
 
+		// Setup
+		self.delegate = self
+
 		// Setup notifications
 		self.notificationObservers.append(
 				NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: self,
@@ -44,4 +51,8 @@ class UKTTextField : UITextField {
 		// Cleanup
 		self.notificationObservers.forEach() { NotificationCenter.default.removeObserver($0) }
 	}
+
+	// MARK: UITextFieldDelegate methods
+	//------------------------------------------------------------------------------------------------------------------
+	func textFieldShouldReturn(_ textField :UITextField) -> Bool { self.shouldReturnProc(textField as! UKTTextField) }
 }

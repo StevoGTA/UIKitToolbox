@@ -35,6 +35,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 						set { self.treeViewBacking.compareTreeItemsProc = newValue }
 					}
 			var	configureTreeItemCellProc :ConfigureTreeItemCellProc?
+			var	shouldSelectTreeItemProc :(_ treeItem :TreeItem) -> Bool = { _ in true }
 			var	selectionDidChangeProc :SelectionDidChangeProc?
 
 	private	let	treeViewBacking = TreeViewBacking()
@@ -106,6 +107,13 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 
 	// MARK: UICollectionViewDelegate methods
+	//------------------------------------------------------------------------------------------------------------------
+	func collectionView(_ collectionView :UICollectionView, shouldSelectItemAt indexPath :IndexPath) -> Bool {
+		// Call proc
+		return self.shouldSelectTreeItemProc(
+				self.treeViewBacking.treeItem(for: self.dataSourceInstance.itemIdentifier(for: indexPath)!))
+	}
+
 	//------------------------------------------------------------------------------------------------------------------
 	func collectionView(_ collectionView :UICollectionView, didSelectItemAt indexPath :IndexPath) {
 		// Call proc
@@ -203,3 +211,36 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 }
 
+/*
+iOS/tvOS:
+	UICollectionView
+	Swift
+
+macOS:
+	NSOutlineView
+	Swift
+
+	C++ compatible - Obj-C++???a
+	-or-
+	C++ with other C++ modules like CSearchEngine that can be cross-platform for C++ objects
+
+	So, yes, C++ implementation based on Swift implementation
+	? Possible to make a single Swift implementation that con go for both iOS/tvOS & macOS
+
+	macOS (NSOutlineView):
+		maintains hierarchy internally
+		interacts through "item"
+		backing maintains "item" object with pointer to model object
+
+	iOS (UICollectionView)
+		maintains section/row
+		interacts through section/row
+		can take advantage of diffabble data source
+		must maintain independent tree of backing items
+			backing item must point to model object
+			backing item must maintain "indentation" level
+
+	iOS UICollectionView
+		-> UIDiffableDataSource
+			-> TreeViewBacking
+*/
