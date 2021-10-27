@@ -60,6 +60,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 								// Setup
 								let	viewItemID = $2
 
+								$0.accessories = []
 								self.configureTreeItemCellProc?(self.treeViewBacking.treeItem(for: viewItemID), $0,
 										viewItemID)
 								$0.indentationLevel = self.treeViewBacking.indentationLevel(for: viewItemID) - 1
