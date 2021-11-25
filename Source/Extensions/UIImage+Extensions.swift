@@ -16,6 +16,9 @@ extension UIImage {
 	//------------------------------------------------------------------------------------------------------------------
 	static func from(_ data :Data?) -> UIImage? { (data != nil) ? UIImage(data: data!) : nil }
 
+	//------------------------------------------------------------------------------------------------------------------
+	static func from(_ cgImage :CGImage?) -> UIImage? { (cgImage != nil) ? UIImage(cgImage: cgImage!) : nil }
+
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
 	func aspectCroppedImageSize(for size :CGSize) -> CGSize {
