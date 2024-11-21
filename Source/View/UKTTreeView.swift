@@ -14,7 +14,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 
 	// MARK: Types
 	typealias ConfigureTreeItemCellProc =
-				(_ treeItem :TreeItem, _ collectionViewListCell :UICollectionViewListCell, _ viewItemID :String) -> Void
+				(_ treeItem :TreeItem, _ collectionViewListCell :UICollectionViewListCell, _ itemID :String) -> Void
 	typealias SelectionDidChangeProc = () -> Void
 
 	// MARK: Properties
@@ -40,7 +40,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 
 	private	let	treeViewBacking = TreeViewBacking()
 
-	private	var	expandedViewItemIDs = Set<String>()
+	private	var	expandedItemIDs = Set<String>()
 	private	var	dataSourceInstance :UICollectionViewDiffableDataSource<Int, String>!
 	private	var	snapshotInstance :NSDiffableDataSourceSnapshot<Int, String>!
 
@@ -56,25 +56,24 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 
 		let cellRegistration =
 					UICollectionView.CellRegistration<UICollectionViewListCell, String>()
-							{ [unowned self] in // (cell, indexPath, viewItemID) in
+							{ [unowned self] in // (cell, indexPath, itemID) in
 								// Setup
-								let	viewItemID = $2
+								let	itemID = $2
 
 								$0.accessories = []
-								self.configureTreeItemCellProc?(self.treeViewBacking.treeItem(for: viewItemID), $0,
-										viewItemID)
-								$0.indentationLevel = self.treeViewBacking.indentationLevel(for: viewItemID) - 1
+								self.configureTreeItemCellProc?(self.treeViewBacking.treeItem(for: itemID), $0, itemID)
+								$0.indentationLevel = self.treeViewBacking.indentationLevel(for: itemID) - 1
 
 								// Check if should show accessory
 								let	actionHandler :UICellAccessory.ActionHandler?
-								if self.treeViewBacking.hasChildren(for: viewItemID) {
+								if self.treeViewBacking.hasChildren(of: itemID) {
 									// Setup accessory
-									if self.expandedViewItemIDs.contains(viewItemID) {
+									if self.expandedItemIDs.contains(itemID) {
 										// Expanded
-										actionHandler = { [unowned self] in self.collapse(viewItemID: viewItemID) }
+										actionHandler = { [unowned self] in self.collapse(itemID: itemID) }
 									} else {
 										// Not expanded
-										actionHandler = { [unowned self] in self.expand(viewItemID: viewItemID) }
+										actionHandler = { [unowned self] in self.expand(itemID: itemID) }
 									}
 								} else {
 									// Not expandable
@@ -96,11 +95,11 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 						{ $0.dequeueConfiguredReusableCell(using: cellRegistration, for: $1, item: $2) }
 		self.dataSourceInstance.sectionSnapshotHandlers.willExpandItem = { [unowned self] in
 			// Add as expanded
-			self.expandedViewItemIDs.insert($0)
+			self.expandedItemIDs.insert($0)
 		}
 		self.dataSourceInstance.sectionSnapshotHandlers.willCollapseItem = { [unowned self] in
 			// Remove as expanded
-			self.expandedViewItemIDs.remove($0)
+			self.expandedItemIDs.remove($0)
 		}
 		self.dataSource = self.dataSourceInstance
 
@@ -147,9 +146,9 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func noteNeedsReload(viewItemID :String, reloadSnapshot :Bool = true) {
+	func noteNeedsReload(itemID :String, reloadSnapshot :Bool = true) {
 		// Update TreeViewBacking
-		self.treeViewBacking.noteNeedsReload(viewItemID: viewItemID)
+		self.treeViewBacking.noteNeedsReload(itemID: itemID)
 
 		// Update UI
 		if reloadSnapshot {
@@ -159,13 +158,13 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func expand(viewItemID :String) {
+	func expand(itemID :String) {
 		// Expand
-		self.expandedViewItemIDs.insert(viewItemID)
+		self.expandedItemIDs.insert(itemID)
 
 		// Update UI
 		var	snapshot = self.dataSourceInstance.snapshot()
-		snapshot.reloadItems([viewItemID])
+		snapshot.reloadItems([itemID])
 		self.dataSourceInstance.apply(snapshot)
 
 		self.reloadSnapshot(animated: true)
@@ -175,13 +174,13 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func collapse(viewItemID :String) {
+	func collapse(itemID :String) {
 		// Collapse
-		self.expandedViewItemIDs.remove(viewItemID)
+		self.expandedItemIDs.remove(itemID)
 
 		// Update UI
 		var	snapshot = self.dataSourceInstance.snapshot()
-		snapshot.reloadItems([viewItemID])
+		snapshot.reloadItems([itemID])
 		self.dataSourceInstance.apply(snapshot)
 
 		self.reloadSnapshot(animated: true)
@@ -191,7 +190,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 	}
 
 	//------------------------------------------------------------------------------------------------------------------
-	func isExpanded(viewItemID :String) -> Bool { self.expandedViewItemIDs.contains(viewItemID) }
+	func isExpanded(itemID :String) -> Bool { self.expandedItemIDs.contains(itemID) }
 
 	//------------------------------------------------------------------------------------------------------------------
 	func treeItem(at indexPath :IndexPath) -> TreeItem {
@@ -205,7 +204,7 @@ class UKTTreeView : UICollectionView, UICollectionViewDelegate {
 		// Setup
 		self.snapshotInstance = NSDiffableDataSourceSnapshot<Int, String>()
 		self.snapshotInstance.appendSections([0])
-		self.snapshotInstance.appendItems(self.treeViewBacking.viewItemIDs(with: self.expandedViewItemIDs))
+		self.snapshotInstance.appendItems(self.treeViewBacking.itemIDs(with: self.expandedItemIDs))
 
 		// Apply
 		self.dataSourceInstance.apply(self.snapshotInstance, animatingDifferences: animated)

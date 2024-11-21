@@ -16,7 +16,7 @@ extension UKTImageCache {
 
 	// MARK: Instance methods
 	//------------------------------------------------------------------------------------------------------------------
-	func image(for identifier :String) throws -> UIImage? { UIImage.from(try? data(for: identifier)) }
+	func image(for identifier :String) throws -> UIImage? { UIImage.from((try? data(for: identifier))!) }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
