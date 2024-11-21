@@ -205,12 +205,12 @@ static	CVEAGLContext	sGetContext(UKTOpenGLView* openGLView);
 
 	self.gpuInternal =
 			new CGPU(
-					SGPUProcsInfo((SGPUProcsInfo::AcquireContextProc) sAcquireContext,
-							(SGPUProcsInfo::TryAcquireContextProc) sTryAcquireContext,
-							(SGPUProcsInfo::ReleaseContextProc) sReleaseContext,
-							(SGPUProcsInfo::GetSizeProc) sGetSize, (SGPUProcsInfo::GetScaleProc) sGetScale,
-							(SGPUProcsInfo::GetRenderBufferStorageContextProc) sGetRenderBufferStorageContext,
-							(SGPUProcsInfo::GetContextProc) sGetContext, (__bridge void*) self));
+					CGPU::Procs((CGPU::Procs::AcquireContextProc) sAcquireContext,
+							(CGPU::Procs::TryAcquireContextProc) sTryAcquireContext,
+							(CGPU::Procs::ReleaseContextProc) sReleaseContext,
+							(CGPU::Procs::GetSizeProc) sGetSize, (CGPU::Procs::GetScaleProc) sGetScale,
+							(CGPU::Procs::GetRenderBufferStorageContextProc) sGetRenderBufferStorageContext,
+							(CGPU::Procs::GetContextProc) sGetContext, (__bridge void*) self));
 
 	// Check for errors
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
